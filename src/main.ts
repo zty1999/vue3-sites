@@ -1,9 +1,18 @@
 import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
 
 
 import { router, setupRouter } from '@/router';
+
+
+// CSS base style sheet
+import '@/assets/styles/normalize.css';
+import 'uno.css';
+import 'animate.css';
+import '@/assets/styles/hover.css';
+import './style.css'
+
+
 
 
 const app = createApp(App);

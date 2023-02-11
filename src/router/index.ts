@@ -48,7 +48,36 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     meta: {
 
     }
-  }
+  },
+  {
+    path: '/demos',
+    name: 'Demos',
+    component: () => import('@/views/Demos.vue'),
+    meta: {
+
+    },
+
+  },
+  {
+    path: '/snow-flake',
+    name: 'snow-flake',
+    // component: () => import('@/components/three-particles/snow-flake.vue'),
+    component: () => import('@/views/snow-flake.vue'),
+    meta: {
+
+    },
+
+  },
+  {
+    path: '/three',
+    name: 'Three',
+    component: () => import('@/views/Three.vue'),
+    meta: {
+
+    },
+    
+  },
+
 ]
 
 

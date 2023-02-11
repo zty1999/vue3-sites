@@ -10,65 +10,60 @@ import gsap from "gsap";
 import * as dat from "dat.gui";
 import View from "@/modules/three";
 
+// 导入场景
+import scene from "@/modules/three/scene";
+
+// 导入相机
+import cameraModule from "@/modules/three/camera";
+
+// 导入轨道控制器
+// import controls from "@/modules/three/controls";
+
+// 导入渲染器
+import { renderer } from "@/modules/three/renderer";
+
 
 // 初始化调整屏幕
 import "@/modules/three/init";
+import { useEventListener } from "@/hooks/useEventListener";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
 // 目标：运用数学知识设计特定形状的星系
 
 const gui = new dat.GUI();
 
-const viewEle = ref<HTMLCanvasElement>();
-let  scene:THREE.Scene;
 
-onMounted(() => {
-  const view = viewEle && new View(viewEle as any,{
-    camera:[75,window.innerWidth / window.innerHeight, 0.1,30],
-    onRender: (dom:any,camera:THREE.Camera) =>{
-      let windowHalfX = window.innerWidth / 2;
-      let windowHalfY = window.innerHeight / 2;
-      // let mouseX = 0, mouseY = 0;
-      // mouseX =  windowHalfX;
-      // mouseY = windowHalfY;
-      // console.log(mouseX,mouseY,( mouseX - camera.position.x ) * 0.05,( - mouseY - camera.position.y ) * 0.05);
-      // camera.position.x += ( mouseX - camera.position.x ) * 0.05;
-	    // camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
-
-      console.log(camera.position,windowHalfX);
-      
-      if(camera.position.x >= windowHalfX){
-        camera.position.x -= 0.1;
-      }else if(-camera.position.x >= windowHalfX || camera.position.x < windowHalfX ) {
-        camera.position.x += 0.1;
-      }else {
-        
-      }
-      if(camera.position.y > windowHalfY){
-        camera.position.y -= 0.1;
-      }else if(camera.position.y >= windowHalfY || camera.position.y < windowHalfY) {
-        camera.position.y += 0.1;
-      }
-    }
-  })
-
-  console.log(view);
-  const camera = view.camera;
-  scene = view.scene;
-
-  camera.position.set(0, -8,10);
-  camera.rotation.set(Math.PI / 4,0,0,"XZY")
-
-  generateGalaxy();
-
-})
+// 2、创建相机
+const camera = cameraModule.addCamera('particles',[75,window.innerWidth / window.innerHeight, 0.1,30])
+cameraModule.setActiveCamera('particles')
+// const camera = new THREE.PerspectiveCamera(
+//   75,
+//   window.innerWidth / window.innerHeight,
+//   0.1,
+//   30
+// );
 
 const textureLoader = new THREE.TextureLoader();
-  let particlesUrl = new URL("@/modules/three/textures/particles/1.png" , import.meta.url).href
-  const particlesTexture = textureLoader.load(particlesUrl);
+let particlesUrl = new URL("@/modules/three/textures/particles/1.png" , import.meta.url).href
+const particlesTexture = textureLoader.load(particlesUrl);
+// 设置相机位置
+camera.position.set(0, 0,10);
+scene.add(camera);
+
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper)
+
+//创建轨道控制器
+const controls = new OrbitControls(camera, renderer.domElement);
+// 设置控制器阻尼，让控制器更有真实效果,必须在动画循环里调用.update()。
+controls.enableDamping = true;
 
 
-
+let mouseX = 0, mouseY = 0;
+let windowHalfX = window.innerWidth / 2;
+let windowHalfY = window.innerHeight / 2;
 const params = {
-  count: 10000,
+  count: 1000,
   size: 0.1,
   radius: 5,
   branch: 3,
@@ -146,12 +141,18 @@ const generateGalaxy = () => {
   points = new THREE.Points(geometry, material);
   scene.add(points);
 };
+generateGalaxy();
 
-
-
+// 初始化渲染器
+// 设置渲染的尺寸大小
+renderer.setSize(window.innerWidth, window.innerHeight);
+// 开启场景中的阴影贴图
+renderer.shadowMap.enabled = true;
+renderer.physicallyCorrectLights = true;
 
 // console.log(renderer);
-
+// 将webgl渲染的canvas内容添加到body
+document.body.appendChild(renderer.domElement);
 
 // // 使用渲染器，通过相机将场景渲染进来
 // renderer.render(scene, camera);
@@ -161,19 +162,40 @@ const generateGalaxy = () => {
 // 设置时钟
 const clock = new THREE.Clock();
 
-// function render() {
-//   let time = clock.getElapsedTime();
-//   // camera.rotation.x += ( mouseX - camera.position.x ) * 0.05;
-// 	// camera.rotation.y += ( - mouseY - camera.position.y ) * 0.05;
-//   controls.update();
-//   renderer.render(scene, camera);
-//   //   渲染下一帧的时候就会调用render函数
-//   requestAnimationFrame(render);
-// }
+function render() {
+  let time = clock.getElapsedTime();
+  // camera.rotation.x += ( mouseX - camera.position.x ) * 0.05;
+	// camera.rotation.y += ( - mouseY - camera.position.y ) * 0.05;
+  controls.update();
+  renderer.render(scene, camera);
+  //   渲染下一帧的时候就会调用render函数
+  requestAnimationFrame(render);
+}
 
+render();
 
+// 监听画面变化，更新渲染画面
+useEventListener("resize", () => {
+  //   console.log("画面变化了");
 
+  // 更新摄像头
+  camera.aspect = window.innerWidth / window.innerHeight;
+  //   更新摄像机的投影矩阵
+  camera.updateProjectionMatrix();
 
+  //   更新渲染器
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  //   设置渲染器的像素比
+  renderer.setPixelRatio(window.devicePixelRatio);
+});
+const  onPointerMove = (event:any) => {
+  if ( event.isPrimary === false ) return;
+
+  mouseX = event.clientX - windowHalfX;
+  mouseY = event.clientY - windowHalfY;
+
+}
+useEventListener("pointermove",onPointerMove)
 
 
 </script>
