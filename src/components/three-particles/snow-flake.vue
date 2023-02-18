@@ -105,9 +105,13 @@ const creatSnow = (url:string,config:Snow) =>{
   pointsMaterial.transparent = true;
 
 
-  pointsMaterial.depthWrite = false;
-  pointsMaterial.blending = THREE.AdditiveBlending;
 
+  pointsMaterial.depthWrite = false;// 深度检测  使后方雪花不被遮挡
+  pointsMaterial.blending = THREE.AdditiveBlending;// 混合算法 叠加
+
+
+  // 设置启动顶点颜色
+  // pointsMaterial.vertexColors = true;
   
   // 相机深度而衰减
   pointsMaterial.sizeAttenuation = true;
@@ -124,9 +128,9 @@ const creatSnow = (url:string,config:Snow) =>{
 
 
 
-let config1 = new Snow(1.5,.1,10000);
-let config2 = new Snow(1.5,.3,10000);
-let config3 = new Snow(1.5,.3);
+let config1 = new Snow(1.5,.01,10000);
+let config2 = new Snow(1.5,.03,10000);
+let config3 = new Snow(1.5,.03);
 let points:THREE.Points = creatSnow('3',config1)
 let points2:THREE.Points = creatSnow('14',config2)
 let points3:THREE.Points = creatSnow('xh',config3)
@@ -150,8 +154,8 @@ onMounted(() => {
   viewEle.value?.appendChild(renderer.domElement);
   console.log(viewEle.value?.offsetWidth);
   console.log(viewEle.value?.offsetHeight);
-      // 更新摄像头
-      camera.aspect = viewEle.value!.offsetWidth / viewEle.value!.offsetHeight;
+  // 更新摄像头
+  camera.aspect = viewEle.value!.offsetWidth / viewEle.value!.offsetHeight;
   // 设置渲染的尺寸大小
   renderer.setSize(viewEle.value!.offsetWidth, viewEle.value!.offsetHeight);
 

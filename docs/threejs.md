@@ -163,6 +163,7 @@ export default  function animate(cube:Mesh) {
 
 
 
+
 ## 材质纹理
 
 
@@ -498,13 +499,75 @@ const doorColorTexture = textureLoader.load(
 
 
 ```
-### 光线投射与物体交互
+### 光线投射与物体交互 Raycaster
+
+光线投射用于进行鼠标拾取（在三维空间中计算出鼠标移过了什么物体）。
+官网示例：
+```js
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+function onPointerMove( event ) {
+
+	// 将鼠标位置归一化为设备坐标。x 和 y 方向的取值范围是 (-1 to +1)
+
+	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+}
+
+function render() {
+
+	// 通过摄像机和鼠标位置更新射线
+	raycaster.setFromCamera( pointer, camera );
+
+	// 计算物体和射线的焦点  检测物体
+	const intersects = raycaster.intersectObjects( scene.children );
+
+	for ( let i = 0; i < intersects.length; i ++ ) {
+
+		intersects[ i ].object.material.color.set( 0xff0000 );
+
+	}
+
+	renderer.render( scene, camera );
+
+}
+
+window.addEventListener( 'pointermove', onPointerMove );
+window.requestAnimationFrame(render);
+```
 
 
 
 
 
 
+
+## 其它
+### 性能监视器
+```js
+let stats = new Stats() // 创建性能监视器 
+
+stats.setMode(0) // 设置监视器面板，传入面板id(0: fps, 1: ms, 2: mb) 
+// 设置监视器位置 
+stats.domElement.style.position = 'absolute' 
+stats.domElement.style.left = '0px' 
+stats.domElement.style.top = '0px'
+
+// 将监视器添加到页面中 
+document.body.appendChild(stats.domElement)
+
+function render() {
+
+ stats.update() // 更新帧数
+
+  renderer.render(scene, camera) 
+  requestAnimationFrame(render) 
+}
+
+render()
+```
 ## GSAP （GreenSock 动画平台）
 
 构建适用于所有主流浏览器的高性能动画
@@ -607,3 +670,10 @@ window.addEventListener("dblclick",() => {
     folder.add(cube.material,"wireframe").name( '线框展示')
     folder.add(cube.position,"x").min(0).max(5).step(0.01).name('x轴上移动')
 ```    
+
+
+
+
+
+## FAQ
+物体绕自身旋转

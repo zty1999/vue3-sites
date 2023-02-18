@@ -1,5 +1,5 @@
 <template>
-  <div class="starry-sky">
+  <div class="starry-sky" ref="wrapEle">
     <div class="control" ref="controlEle">
 
     </div>
@@ -15,16 +15,27 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import gsap from "gsap";
 // 导入dat.gui
 import * as dat from "dat.gui";
-
+// const props = defineProps({
+//   width: String,
+//   height:String
+// })
+// const { width = "100%",height = "100%" } = props;
 // 目标：使用pointes设置随机顶点打造星河
+const wrapEle = ref<HTMLCanvasElement>();
 const viewEle = ref<HTMLCanvasElement>();
 const controlEle = ref<HTMLCanvasElement>();
-
+  
 const gui = new dat.GUI({ name: '控制器' });
 onMounted(() => {
   console.log(gui.domElement);
 
   controlEle.value?.appendChild(gui.domElement)
+  if(viewEle.value) {
+    viewEle.value.style.width = wrapEle.value!.offsetWidth + 'px'
+    viewEle.value.style.height = wrapEle.value!.offsetHeight + 'px'
+    
+    
+  }
   viewEle.value?.appendChild(renderer.domElement);
   console.log(viewEle.value?.offsetWidth);
   console.log(viewEle.value?.offsetHeight);
@@ -106,13 +117,12 @@ const points = new THREE.Points(particlesGeometry, pointsMaterial);
 
 scene.add(points);
 
-// 初始化渲染器
-const renderer = new THREE.WebGLRenderer();
+// 初始化渲染器   alpha 设置渲染器透明
+const renderer = new THREE.WebGLRenderer({alpha:false});
 
 // 开启场景中的阴影贴图
 renderer.shadowMap.enabled = true;
 renderer.physicallyCorrectLights = true;
-
 // console.log(renderer);
 
 

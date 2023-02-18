@@ -12,11 +12,11 @@ declare module '@vue/runtime-core' {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Image: typeof import('./src/components/image/src/image.vue')['default']
     Particles: typeof import('./src/components/Particles.vue')['default']
-    'Particles copy': typeof import('./src/components/Particles copy.vue')['default']
-    'Particles copy 2': typeof import('./src/components/Particles copy 2.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SnowFlake: typeof import('./src/components/three-particles/snow-flake.vue')['default']
+    SpiralGalaxy: typeof import('./src/components/three-particles/spiral-galaxy.vue')['default']
     StarrySky: typeof import('./src/components/three-particles/starry-sky.vue')['default']
+    Triangle: typeof import('./src/components/triangle.vue')['default']
   }
 }

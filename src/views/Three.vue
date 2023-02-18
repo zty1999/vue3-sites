@@ -7,6 +7,9 @@
       <div class="demo-item hvr-grow" @click="showDemo('snow-flake')">
         <p class="demo-item-title hvr-grow">snow-flake</p>
       </div>
+      <div class="demo-item hvr-grow" @click="showDemo('spiral-galaxy')">
+        <p class="demo-item-title hvr-grow">spiral-galaxy</p>
+      </div>
     </div>
   </div>
 
@@ -36,6 +39,10 @@
             <template v-if="currentShowDemo == 'snow-flake'">
               <component :is="(SnowFlake)"></component>
             </template>
+            <template v-if="currentShowDemo == 'spiral-galaxy'">
+              <component :is="(SpiralGalaxy)"></component>
+            </template>
+            
           </div>
         </div>
         </div>
@@ -49,6 +56,7 @@
 <script lang="ts" setup>
 import StarrySky from '@/components/three-particles/starry-sky.vue';
 import SnowFlake from '@/components/three-particles/snow-flake.vue';
+import SpiralGalaxy from '@/components/three-particles/spiral-galaxy.vue';
 import { Ref } from 'vue';
 enum Demo {
   'starry-sky' = '星空',

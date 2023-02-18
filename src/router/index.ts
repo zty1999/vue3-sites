@@ -50,6 +50,15 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/home',
+    name: 'home',
+    component: () => import('@/views/home.vue'),
+    meta: {
+
+    },
+    
+  },
+  {
     path: '/demos',
     name: 'Demos',
     component: () => import('@/views/Demos.vue'),
@@ -77,7 +86,15 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     },
     
   },
+  {
+    path: '/3d-scroll',
+    name: '3d-scroll',
+    component: () => import('@/views/3d-scroll.vue'),
+    meta: {
 
+    },
+    
+  },
 ]
 
 
