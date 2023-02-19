@@ -7,7 +7,7 @@ import {
 
 
 import { App } from 'vue';
-import * as text from  "../locales"
+import * as text from "../locales"
 
 // // import.meta.globEager() 直接引入所有的模块 Vite 独有的功能
 // const modules = import.meta.glob('./modules/**/*.ts', { eager: true });
@@ -56,7 +56,7 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     meta: {
 
     },
-    
+
   },
   {
     path: '/demos',
@@ -67,16 +67,16 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     },
 
   },
-  {
-    path: '/snow-flake',
-    name: 'snow-flake',
-    // component: () => import('@/components/three-particles/snow-flake.vue'),
-    component: () => import('@/views/snow-flake.vue'),
-    meta: {
+  // {
+  //   path: '/snow-flake',
+  //   name: 'snow-flake',
+  //   // component: () => import('@/components/three-particles/snow-flake.vue'),
+  //   component: () => import('@/views/snow-flake.vue'),
+  //   meta: {
 
-    },
+  //   },
 
-  },
+  // },
   {
     path: '/three',
     name: 'Three',
@@ -84,16 +84,25 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     meta: {
 
     },
-    
+
   },
   {
     path: '/3d-scroll',
     name: '3d-scroll',
-    component: () => import('@/views/3d-scroll.vue'),
+    component: () => import('@/views/3d-scroll/3d-scroll.vue'),
     meta: {
 
     },
-    
+
+  },
+  {
+    path: '/3d-text',
+    name: '3d-text',
+    component: () => import('@/views/3d-text.vue'),
+    meta: {
+
+    },
+
   },
 ]
 
@@ -104,7 +113,7 @@ const WHITE_NAME_LIST: string[] = [];
 
 
 
-const routes = [RootRoute,...ThreejsRoutes]
+const routes = [RootRoute, ...ThreejsRoutes]
 
 // export const router = createRouter({
 //   history: createWebHistory(process.env.BASE_URL),

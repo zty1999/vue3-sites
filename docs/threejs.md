@@ -8,6 +8,13 @@ https://3dtextures.me/
 https://www.arroway-textures.ch/textures/
 https://quixel.com/ 配合虚幻引擎账号免费使用
 
+3d text 字体转换：
+facetype.js
+
+matcaps(use MeshMatcapMaterial):
+https://github.com/nidorx/matcaps
+
+
 
 三要素：
 场景
@@ -128,7 +135,7 @@ export default  function animate(cube:Mesh) {
 ## 自定义几何体
 一个简单的矩形由两个三角形组成。
 创建一个简单的矩形，需要6个顶点。
-
+**TorusGeometry 圆环几何体** 
 ### 打造酷炫的三角形
 ```js
   // 添加物体
@@ -166,6 +173,11 @@ export default  function animate(cube:Mesh) {
 
 ## 材质纹理
 
+### 材质
+
+**MeshMatCapMaterial**
+由材质捕捉（MatCap，或光照球 Lit Sphere）纹理定义，mapcap图像文件编码了烘焙过的光照（即matcapTexture本身包含光照），因此MeshMatcapMaterial 不对灯光作出反应。
+会投射阴影到一个接受阴影的物体上(and shadow clipping works)，但不会产生自身阴影或是接受阴影。
 
 ### 加载纹理
 ```js

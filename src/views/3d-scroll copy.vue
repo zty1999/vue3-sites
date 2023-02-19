@@ -34,13 +34,13 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
 import Stats from 'three/examples/jsm/libs/stats.module.js'
-import { generateTriangles } from "./triangles";
+import { generateTriangles } from "./3d-scroll/triangles";
 let currentPage = 1;
 
 const wrapEle = ref<HTMLCanvasElement>();
 const viewEle = ref<HTMLCanvasElement>();
 const controlEle = ref<HTMLCanvasElement>();
-const arrGroup:any[] = []
+const arrGroup: any[] = []
 onMounted(() => {
   // 1、创建场景
   const scene = new THREE.Scene();
@@ -62,7 +62,7 @@ onMounted(() => {
 
 
 
-  
+
   // 监听鼠标移动事件
   useEventListener('mousemove', (e) => {
     let x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -101,7 +101,7 @@ onMounted(() => {
   // controls.enableDamping = true;
   // controls.autoRotate = true;
   // controls.autoRotateSpeed = 1
- 
+
 
 
   let stats: Stats = Stats() // 创建性能监视器 

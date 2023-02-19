@@ -3,8 +3,8 @@
     <div class=" canvas-wrapper" ref="viewEle"></div>
     <div class="intro-content">
       <h1 class="intro-text">
-      Spark Sites
-    </h1>
+        Spark Sites
+      </h1>
     </div>
   </div>
 
@@ -18,7 +18,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
 import Stats from 'three/examples/jsm/libs/stats.module.js'
-import { generateTriangles } from "./triangles";
+import { generateTriangles } from "./3d-scroll/triangles";
 let currentPage = 1;
 
 const wrapEle = ref<HTMLCanvasElement>();
@@ -143,6 +143,7 @@ window.addEventListener("scroll", () => {
   width: 100%;
   height: 100vh;
 }
+
 .intro-content {
   /* display: flex;
   flex-direction: column;
@@ -153,11 +154,12 @@ window.addEventListener("scroll", () => {
   color: #fff;
   z-index: 10;
 }
+
 .intro-text {
   font-size: 60px;
-  position:relative;
+  position: relative;
   left: 50%;
   top: 50%;
-  transform: translate(-50%,-50%)
+  transform: translate(-50%, -50%)
 }
 </style>

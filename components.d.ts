@@ -7,11 +7,8 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    2: typeof import('./src/components/Particles copy 2.vue')['default']
-    copy: typeof import('./src/components/Particles copy.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Image: typeof import('./src/components/image/src/image.vue')['default']
-    Particles: typeof import('./src/components/Particles.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SnowFlake: typeof import('./src/components/three-particles/snow-flake.vue')['default']
