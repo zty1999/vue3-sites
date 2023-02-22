@@ -104,6 +104,24 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     },
 
   },
+  {
+    path: '/physics',
+    name: 'physics',
+    component: () => import('@/views/physics.vue'),
+    meta: {
+
+    },
+
+  },
+  {
+    path: '/shader',
+    name: 'shader',
+    component: () => import('@/views/shader.vue'),
+    meta: {
+
+    },
+
+  },
 ]
 
 

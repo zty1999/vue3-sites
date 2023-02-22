@@ -1,19 +1,29 @@
-参考资料:
+**参考资料**:
 官网 https://threejs.org/docs
 郭隆邦 http://www.webgl3d.cn/pages/56b66b/
 
-素材网站:
+**素材网站**:
 https://www.poliigon.com/search/free
 https://3dtextures.me/
 https://www.arroway-textures.ch/textures/
 https://quixel.com/ 配合虚幻引擎账号免费使用
+aigei.com  爱给网
 
-3d text 字体转换：
+**3d text 字体转换**：
 facetype.js
 
-matcaps(use MeshMatcapMaterial):
+**matcaps(use MeshMatcapMaterial)**:
 https://github.com/nidorx/matcaps
 
+**3d 物理引擎库**：
+ammo.js
+cannon.js  -  无人维护  fork维护版本：cannon-es  （doc:https://pmndrs.github.io/cannon-es/docs/index.html）
+oimo.js
+**2d 物理引擎库**：
+matter.js
+p2.js
+planck.js
+box2d.js
 
 
 三要素：
@@ -174,10 +184,13 @@ export default  function animate(cube:Mesh) {
 ## 材质纹理
 
 ### 材质
-
+**标准网格材质(MeshStandardMaterial)** 正确应对光照场景
+metalness 材质与金属的相似度
 **MeshMatCapMaterial**
 由材质捕捉（MatCap，或光照球 Lit Sphere）纹理定义，mapcap图像文件编码了烘焙过的光照（即matcapTexture本身包含光照），因此MeshMatcapMaterial 不对灯光作出反应。
 会投射阴影到一个接受阴影的物体上(and shadow clipping works)，但不会产生自身阴影或是接受阴影。
+
+
 
 ### 加载纹理
 ```js
@@ -556,6 +569,228 @@ window.requestAnimationFrame(render);
 
 
 
+
+## 物理引擎
+**Cannon-es**
+
+
+
+动态物体：物体具有质量并受到力的影响
+运动学物体：不受力的影响，但可以具有速度并四处移动
+静态物体：只能定位在世界上，不受力和速度的影响  (mass 设置为 0 创建静态物体 mass == 0 makes the body static)
+
+
+### 物理引擎关联threejs 物体
+world.step(fixedTimeStep,deltaTime,maxSubSteps); 更新物理引擎里世界的物体
+物理球体的位置复制给threejs小球  threejs小球随着物理小球的下坠而下坠  实现物理球体与渲染球体之间的位置关联
+sphere.position.copy(sphereBody.position as any);
+
+```js
+// Setup our world 物理世界，它将容纳我们所有的物理实体并推进模拟
+const world = new CANNON.World();
+world.gravity.set(0, 0, -9.82); // m/s²
+
+
+// 创建物理地面
+var groundBody = new CANNON.Body({
+  mass: 0 // mass == 0 makes the body static
+});
+var groundShape = new CANNON.Plane();
+groundBody.addShape(groundShape);
+groundBody.position.set(0, -2, 0);
+// setFromAxisAngle 按照哪个轴旋转多少度
+groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), - Math.PI / 2) // make it face up
+world.addBody(groundBody);
+
+
+// 创建物理球体
+var radius = 1; // m
+var sphereBody = new CANNON.Body({
+  mass: 5, // kg
+  position: new CANNON.Vec3(0, 0, 0), // m 
+  shape: new CANNON.Sphere(radius),// 形状
+  // material: concreateMaterial
+});
+// 添加到物理世界 add to world
+world.addBody(sphereBody);
+
+
+
+  const render = () => {
+    //...
+    let deltaTime = clock.getDelta();
+    // 更新物理引擎里世界的物体
+    // a fixed time step
+    // how much time passed since the last step
+    // how much iterations the world can apply to catch up with a potential delay
+    // world.step(fixedTimeStep:希望模拟运行的固定时间步长,deltaTime:距离上一步的间隔时间,maxSubSteps:,)
+    world.step(1 / 120, deltaTime);
+    // 物理球体的位置复制给threejs小球  threejs小球随着物理小球的下坠而下坠
+    sphere.position.copy(sphereBody.position as any);
+    //...
+  }
+  render()
+
+
+```
+
+### 物体碰撞
+```js
+// 载入音频
+let hitSound = new Audio('音频地址')
+
+// 监听物体碰撞   播放音频
+xxx.addEventerListener("collide",()=>{
+  // 根据碰撞强度设置音频音量大小
+  // 碰撞强度
+  let impactStrength = event.contact.getImpactVelocityAlongNormal();
+  if (impactStrength > 2) {
+    //   重新从零开始播放
+    hitSound.currentTime = 0;
+    // 音频音量随碰撞强度调节
+    hitSound.volume = impactStrength / 12;
+    hitSound.play();
+  }
+})
+
+```
+
+**关联材质设置摩擦与弹性系数**
+创建材质后,可使用connectMaterial 对两个材质进行关联,可设置两个材质之间的摩擦力和弹性系数
+关联材质也需要添加到物理世界中
+```js
+
+// 关联两种材质,设置材质间摩擦力及弹性系数
+const connectMaterial = new CANNON.ContactMaterial(
+  sphereWorldMaterial,
+  floorMaterial,
+  {
+    //   摩擦力
+    friction: 0.1,
+    // 弹性
+    restitution: 0.7,
+  }
+)
+// 添加关联材质到物理世界
+world.addContactMaterial(connectMaterial);
+
+```
+
+**物体碰撞后旋转**
+```js
+    // 物理物体的旋转值复制给渲染物体  渲染物体随着物理物体的旋转而旋转
+    sphere.quaternion.copy(sphereBody.quaternion as any);
+```
+
+**给物体施加力**
+```js
+xxx.applyLocalForce(Vetc3:施加力的方向及大小,Vetc3:施加力的位置)
+
+// 在世界的某一点施加力  applyForce
+```
+
+
+
+
+
+
+## 着色器 shader
+编写着色器需要使用 着色器语法,使用vscode 需要安装 shader languages support for vs code 插件 
+
+vite项目,新建 .glsl 文件编写着色器语法,在导入时会报语法错误 ,
+是因为vite在导入时尝试解析glsl文件遇到了不理解的语法，报错。
+
+.glsl是着色器语法，只要将它的内容作为字符串传给threejs，并不需要去解析它.
+
+
+所以，在导入时，告诉vite，以字符串形式加载.glsl文件即可，即在文件后面加上“raw”参数即可,"xxxx?raw" (https://cn.vitejs.dev/guide/features.html#static-assets)
+
+
+### 着色器材质(ShaderMaterial)
+使用自定义shader渲染的材质:
+要实现内置 materials 之外的效果。
+将许多对象组合成单个BufferGeometry以提高性能。
+ShaderMaterial 只有使用 WebGLRenderer 才可以绘制正常
+```js
+const material = new THREE.ShaderMaterial( {
+
+	uniforms: {
+
+		time: { value: 1.0 },
+		resolution: { value: new THREE.Vector2() }
+
+	},
+
+	vertexShader: ``,
+
+	fragmentShader: ``
+
+} );
+```
+
+
+
+
+### 原始着色器材质(RawShaderMaterial)
+此类的工作方式与ShaderMaterial类似，不同之处在于内置的uniforms和attributes的定义不会自动添加到GLSL shader代码中。
+
+```js
+const material = new THREE.RawShaderMaterial( {
+
+	uniforms: {
+		time: { value: 1.0 }
+	},
+	vertexShader: document.getElementById( 'vertexShader' ).textContent,
+	fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+
+} );
+```
+
+
+
+### 顶点着色器和片元着色器(Vertex shaders and fragment shaders)
+
+```js
+const material = new THREE.ShaderMaterial( {
+
+	uniforms: {
+
+		time: { value: 1.0 },
+		resolution: { value: new THREE.Vector2() }
+
+	},
+
+	vertexShader: `
+    void main(){
+      gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position,1.0);
+    }
+  `,
+
+	fragmentShader: `
+    void main(){
+      gl_FragColor = vec4(1.0,0.0,0.0,1);
+    }
+  `
+
+} );
+```
+
+常见的顶点着色器中,顶点变换过程通常用下面两种写法:
+```js
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0)
+  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position,1.0)
+```
+<投影矩阵><视图矩阵><模型矩阵><顶点坐标>
+
+相乘的顺序不能改变,物体本身拥有一个坐标系,把物体放到世界坐标系中,采用了模型矩阵,就是执行缩放 平移 旋转操作的过程,此时物体就具有了世界坐标系
+
+再加入上帝之眼,就是视图矩阵,包括视点坐标 观察坐标 和上方向,现在只差最后一步投影矩阵,物体就可以呈现出来了. 
+
+目前显示设备就是二维平面的,所以需要投影矩阵来转换物体 投影矩阵通常分为平行投影和透视投影.  (经 camera 投射后)
+
+
+
+
 ## 其它
 ### 性能监视器
 ```js
@@ -580,6 +815,10 @@ function render() {
 
 render()
 ```
+
+
+
+
 ## GSAP （GreenSock 动画平台）
 
 构建适用于所有主流浏览器的高性能动画
@@ -689,3 +928,5 @@ window.addEventListener("dblclick",() => {
 
 ## FAQ
 物体绕自身旋转
+
+搜不到 为什么 监听物体碰撞是 collide,  

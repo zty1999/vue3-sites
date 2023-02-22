@@ -12,6 +12,7 @@
     "@types/node": "^18.14.0",
     "@unocss/reset": "^0.49.4",
     "animate.css": "^4.1.1",
+    "cannon-es": "^0.20.0",
     "dat.gui": "^0.7.9",
     "gsap": "^3.11.4",
     "path": "^0.12.7",
