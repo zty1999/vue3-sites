@@ -25,6 +25,14 @@ p2.js
 planck.js
 box2d.js
 
+**着色器语言学习**
+https://thebookofshaders.com/
+案例展示: https://www.shadertoy.com/
+
+
+**gltf模型**
+https://github.com/KhronosGroup/glTF-Sample-Models
+
 
 三要素：
 场景
@@ -694,6 +702,24 @@ xxx.applyLocalForce(Vetc3:施加力的方向及大小,Vetc3:施加力的位置)
 
 
 
+## Model 模型
+
+```js
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
 ## 着色器 shader
 编写着色器需要使用 着色器语法,使用vscode 需要安装 shader languages support for vs code 插件 
 
@@ -747,6 +773,12 @@ const material = new THREE.RawShaderMaterial( {
 ```
 
 
+attribute  顶点着色器专有   设置顶点相关数据
+
+uniform  通用变量
+
+varying  变量传递接收  顶点着色器传递到片元着色器
+
 
 ### 顶点着色器和片元着色器(Vertex shaders and fragment shaders)
 
@@ -787,6 +819,40 @@ const material = new THREE.ShaderMaterial( {
 再加入上帝之眼,就是视图矩阵,包括视点坐标 观察坐标 和上方向,现在只差最后一步投影矩阵,物体就可以呈现出来了. 
 
 目前显示设备就是二维平面的,所以需要投影矩阵来转换物体 投影矩阵通常分为平行投影和透视投影.  (经 camera 投射后)
+
+
+attribute 顶点相关属性
+
+uniform 通用属性
+
+varying  传递属性   从顶点着色器像片元着色器传递变量
+
+
+精度 
+视图矩阵
+
+内置函数  mod(x,y) 取模  sin()正弦 cos() 余弦  
+边界限制 step(edge,x) x<edge=>0.0 x>edge=>1    =>0~1
+钳制 clamp(x,min,max) x<min=>min x>max=>max    =>min~max
+绝对值 abs() 
+distance(p0,p1) 计算两个向量之间的距离
+mix(x,y,a) 返回线性混合的x和y
+
+shaderMaterial uniforms  指定传入着色器的数据  着色器中使用 uniform 声明接收
+自定义 attributes 和 uniforms(Custom attributes and uniforms)
+自定义uniforms必须定义为 ShaderMaterial 的 uniforms 属性
+ 而任何自定义attributes必须通过BufferAttribute实例来定义
+
+
+
+texture2D 2d纹理
+
+
+图形渲染：
+利用取整实现阶段性图形变换 
+
+预处理命令 编译处理阶段起作用：
+宏定义 #define  
 
 
 

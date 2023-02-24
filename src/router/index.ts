@@ -116,10 +116,38 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
   {
     path: '/shader',
     name: 'shader',
-    component: () => import('@/views/shader.vue'),
     meta: {
-
+      
     },
+    children: [
+      {
+        path: 'basic',
+        name: 'basic',
+        component: () => import('@/views/shader/basic.vue'),
+        meta: {
+    
+        },
+    
+      },
+      {
+        path: 'create-pattern',
+        name: 'create-pattern',
+        component: () => import('@/views/shader/create-pattern.vue'),
+        meta: {
+    
+        },
+    
+      },
+      {
+        path: 'kongming-lantern',
+        name: 'kongming-lantern',
+        component: () => import('@/views/shader/kongming-lantern.vue'),
+        meta: {
+    
+        },
+    
+      },
+    ]
 
   },
 ]
