@@ -19,6 +19,6 @@
     },
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue","auto-imports.d.ts"],
-  "exclude": ["src/shader/*"],
+  "exclude": ["**/**.gltf","**/**.glsl"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

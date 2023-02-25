@@ -34,6 +34,24 @@ https://thebookofshaders.com/
 https://github.com/KhronosGroup/glTF-Sample-Models
 
 
+
+
+**创建模型**
+blender
+https://threejs.org/editor/
+
+
+
+
+
+
+
+
+
+
+
+
+
 三要素：
 场景
 相机
@@ -703,20 +721,155 @@ xxx.applyLocalForce(Vetc3:施加力的方向及大小,Vetc3:施加力的位置)
 
 
 ## Model 模型
+github上 glTF-Sample-Models 仓库展示gltf模型示例
+### 模型文件格式
+
+四种模型文件格式：
+**glTF**
+glTF是一种高效、可扩展、可互操作的格式，用于传输和加载3D场景和模型。
+**glTF-Binary**:
+glb:
+通过压缩，GLB能更快地加载，提供完整的三维场景，且能在未来的开发中扩展。
+GLB作为一个容器，用二进制格式实现glTF的内容，并规避了glTF的一些缺陷。
+
+**glTF-Draco**
+**glTF-Embedded**
+
+
+### 模型加载
+
+#### 路径问题：
+
+模型加载失败，搜索问题都说需要将模型文件放在外部public文件夹中，如模型文件位置为'public/models/glTF/xxx',则地址填写 'models/glTF/xxx'  '' 
+但是实际使用时发现请求到的地址为 'shader/public/models/glTF/xxx',shader是视图页面所在文件夹的名称，但是如果是从视图文件夹开始解析的，也应该是 'src/views/shader/public/models/glTF/xxx'.不知道为什么会解析成这样。查看文档发现，loader 可以使用 setPath 设置资产的基本路径。将 基本路径设置为 'public/' 后模型加载成功后，gltf文件中的图片引用加载失败，使用 setResourcePath 设置独立资源的基本路径后成功加载。
 
 ```js
 
+const gltfLoader = new GLTFLoader()
+console.log(gltfLoader);
+gltfLoader.setPath('/public/')
+gltfLoader.setResourcePath('/public/models/glTF/duck/')
+ gltfLoader.load(
+  'models/glTF/duck/Duck.gltf',
+  (gltf) => {
+    console.log(gltf);
+    console.log('success');
+    // scene.add(gltf.scene.children[0]);// 只取gltf内需要的物体
+  },
+  () => {
+    console.log('progress');
+    
+  },
+  () => {
+    console.log('error');
+    
+  }
+ )
+```
+
+#### 加载模型内多个对象：
+直接遍历模型对象添加到场景中，会产生只加载出部分模型对象的现象，因为threejs在 添加到场景这一步会**将模型对象从原本的地方移除**，（具体待了解），将模型对象复制到新的引用对象中，避免在添加场景时将对象移除，实现添加完整的模型对象。
+```js
+  // error 
+  // const children = gltf.scene.children;
+  // for (let index = 0; index < children.length; index++) {
+  //   const child = children[index];
+  //   scene.add(child)
+  // }
+
+  // correct
+
+  const children = [...gltf.scene.children]
+  for(const child of children){
+    scene.add(child)
+  }
+  // or
+  while(gltf.scene.children.length){
+    scene.add(gltf.scene.children[0])
+  }
+```
+
+#### 加载Draco压缩后的模型
+Draco是一个用于压缩和解压缩 3D 网格和点云的开源库。压缩后的几何体可以显著变小，但代价是客户端设备上的解码时间会增加。
+
+Draco 是压缩文件，加载前需要先导入 DracoLoader 对其进行解压后进行加载（解压操作使用其它线程），需要设置draco解码器路径，即draco库的路径，该库在threejs中包含，将 "three/examples/jsm/libs/draco/" 文件夹复制出来即可。这样只当该模型加载时加载解压的模型
 
 
+```js
 
-
-
-
-
+// 压缩文件  解压后加载
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/draco/')// '路径前默认public /public/draco/'
+gltfLoader.setResourcePath('/public/models/glTF-Draco/lantern/')
+gltfLoader.setDRACOLoader(dracoLoader)
+gltfLoader.load(
+  'models/glTF-Draco/lantern/Lantern.gltf',
+  (gltf) => {
+    console.log(gltf);
+    console.log(gltf.scene);
+    console.log('success');
+    scene.add(gltf.scene.children[0])
+  },
+  () => {
+    console.log('progress');
+  },
+  () => {
+    console.log('error');
+    
+  }
+)
 ```
 
 
 
+
+
+
+#### 模型动画
+动画剪辑（AnimationClip）是一个可重用的关键帧轨道集，它代表动画。
+    
+动画混合器（AnimationMixer）是用于场景中特定对象的动画的播放器。当场景中的多个对象独立动画时，每个对象都可以使用同一个动画混合器。
+
+
+
+
+```js
+gltfLoader.load(
+  'models/glTF-Embedded/BrainStem.gltf',
+  (gltf) => {
+    console.log(gltf);
+    console.log('success');
+    gltf.scene.children[0].scale.set(2,2,2)
+    scene.add(gltf.scene.children[0])
+
+    const mixer = new THREE.AnimationMixer(gltf.scene)
+    // 返回所传入的动画剪辑对象的动画动作 https://threejs.org/docs/index.html#api/zh/animation/AnimationMixer
+    const action = mixer.clipAction(gltf.animations[0])
+    console.log(action);
+    // 播放动画动作  执行这一步只能看到播放了一帧的动画，想要得到完整的动画需要在animate中更新动画混合器  mixer.update
+    action.play()
+  },
+  () => {
+    console.log('progress');
+  },
+  () => {
+    console.log('error');
+    
+  }
+)
+
+
+
+const clock = new THREE.Clock();
+const render = () => {
+  let elapsedTime = clock.getElapsedTime();
+  let deltaTime = elapsedTime - previousTime;
+  previousTime = elapsedTime;
+
+  // 更新动画混合器
+  mixer && mixer.update(deltaTime)
+}
+```
 
 
 
