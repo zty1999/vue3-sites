@@ -150,6 +150,24 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     ]
 
   },
+  {
+    path: '/earth-moon-rotation',
+    name: 'earth-moon-rotation',
+    component: () => import('@/views/earth-moon-rotation.vue'),
+    meta: {
+
+    },
+
+  },
+  {
+    path: '/smart-city',
+    name: 'smart-city',
+    component: () => import('@/views/smart-city/smart-city.vue'),
+    meta: {
+
+    },
+
+  },
 ]
 
 

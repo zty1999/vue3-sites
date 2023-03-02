@@ -71,7 +71,8 @@ https://threejs.org/editor/
 
 ## 基本使用
 
-
+renderer:
+antialias 抗锯齿  alpha: 背景透明
 ```js
 
 
@@ -90,8 +91,8 @@ const camera = new THREE.PerspectiveCamera(
 // camera.position.set(100, 100, 300);
 camera.position.z = 5;
 
-// 初始化渲染器
-const renderer = new THREE.WebGLRenderer({});
+// 初始化渲染器  antialias 抗锯齿  alpha: 背景透明
+const renderer = new THREE.WebGLRenderer({antialias: true,alpha: true});
 // 设置渲染尺寸大小
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -167,12 +168,13 @@ export default  function animate(cube:Mesh) {
 }
 
 ```
-
-## 自定义几何体
+## 几何体
+**边缘几何体 EdgesGeometry** 可作为辅助对象查看geometry的边缘
+### 自定义几何体
 一个简单的矩形由两个三角形组成。
 创建一个简单的矩形，需要6个顶点。
 **TorusGeometry 圆环几何体** 
-### 打造酷炫的三角形
+#### 打造酷炫的三角形
 ```js
   // 添加物体
   // 创建几何体
@@ -206,6 +208,18 @@ export default  function animate(cube:Mesh) {
 
 
 
+### 3D text
+```js
+// 文本几何位置设置为中心位置
+  // 计算当前几何体的的边界矩形
+  textGeometry.computeBoundingBox();
+  // 获取计算出的边界矩形  {max,min}  查看数值通过位移 translate 设置几何体位置
+  let bounding = textGeometry.boundingBox;
+  //  也可直接设置 center 方法，使位置位于中心
+  textGeometry.center()
+  console.log(textGeometry.boundingBox);
+  const mesh = new THREE.Mesh(textGeometry, material);
+```
 
 ## 材质纹理
 
@@ -216,7 +230,14 @@ metalness 材质与金属的相似度
 由材质捕捉（MatCap，或光照球 Lit Sphere）纹理定义，mapcap图像文件编码了烘焙过的光照（即matcapTexture本身包含光照），因此MeshMatcapMaterial 不对灯光作出反应。
 会投射阴影到一个接受阴影的物体上(and shadow clipping works)，但不会产生自身阴影或是接受阴影。
 
+**sizeAttenuation**
 
+让物体无视和摄像机的距离，始终保持相同大小，可以通过将 sizeAttenuation 设置成 false 将其关闭。
+```js
+const material = new THREE.PointsMaterial({
+    sizeAttenuation: false,
+});
+```
 
 ### 加载纹理
 ```js

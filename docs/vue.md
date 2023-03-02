@@ -18,4 +18,5 @@ Vue.$set( target, propertyName/index, value )
 
 
 **$nextTick**
+使用场景：需要在视图更新之后,基于新的视图进行操作
 $nextTick 接收一个回调函数,将回调延迟到下次 DOM 更新循环之后执行,即回调函数中的操作会在视图更新后完成

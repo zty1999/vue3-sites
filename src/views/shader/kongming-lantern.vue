@@ -37,7 +37,7 @@ scene.add(camera);
 
 // 初始化渲染器
 // 渲染器透明 { alpha: true }
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({antialias: true });
 
 const viewRef = ref<HTMLCanvasElement>()
 
@@ -140,7 +140,7 @@ let mixer:THREE.AnimationMixer;
     console.log(gltf.scene);
     console.log('success');
       mixer = new THREE.AnimationMixer(gltf.scene)
-      const action = mixer.clipAction(gltf.animations[2])
+      const action = mixer.clipAction(gltf.animations[0])
       console.log(action);
       // 播放动画动作
       action.play()

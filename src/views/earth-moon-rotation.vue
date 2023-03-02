@@ -24,12 +24,14 @@ const camera = new THREE.PerspectiveCamera(
 
 
 // 设置相机位置
-camera.position.set(0, 0, 18);
+camera.position.set(0, 50, 0);
+camera.up.set(0, 0, 1);
+camera.lookAt(0, 0, 0);
 scene.add(camera);
 
 // 初始化渲染器
 // 渲染器透明
-const renderer = new THREE.WebGLRenderer({ alpha: true,antialias: true });
+const renderer = new THREE.WebGLRenderer({ alpha: true });
 
 const viewRef = ref<HTMLCanvasElement>()
 
@@ -38,6 +40,45 @@ const viewRef = ref<HTMLCanvasElement>()
 
 
 
+
+// 要更新旋转角度的对象数组
+const objects:THREE.Mesh[] = [];
+ 
+// 一球多用
+const radius = 1;
+const widthSegments = 6;
+const heightSegments = 6;
+const sphereGeometry = new THREE.SphereGeometry(
+  radius,
+  widthSegments,
+  heightSegments
+);
+ 
+const sunMaterial = new THREE.MeshPhongMaterial({ emissive: 0xffff00 });
+const sunMesh = new THREE.Mesh(sphereGeometry, sunMaterial);
+sunMesh.scale.set(5, 5, 5); // 扩大太阳的大小
+scene.add(sunMesh);
+objects.push(sunMesh);
+
+
+
+const color = 0xffffff;
+const intensity = 3;
+const light = new THREE.PointLight(color, intensity);
+scene.add(light);
+
+
+
+
+
+const earthMaterial = new THREE.MeshPhongMaterial({
+  color: 0x2233ff,
+  emissive: 0x112244,
+});
+const earthMesh = new THREE.Mesh(sphereGeometry, earthMaterial);
+earthMesh.position.x = 10;
+scene.add(earthMesh);
+objects.push(earthMesh);
 
 
 
@@ -70,10 +111,17 @@ onMounted(() => {
 
 
   // 设置时钟
-  // const clock = new THREE.Clock();
+  const clock = new THREE.Clock();
   const render = () => {
-    // let time = clock.getElapsedTime();
+    let time = clock.getElapsedTime();
     // let deltaTime = clock.getDelta();
+
+
+    objects.forEach((obj) => {
+      obj.rotation.y = time;
+    });
+
+
 
     // 使用渲染器，通过相机将场景渲染进来
     renderer.render(scene, camera);

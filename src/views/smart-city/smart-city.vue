@@ -1,39 +1,39 @@
 <template>
-  <div class="view" ref="viewRef"></div>
+  <div class="scene" ref="sceneRef"></div>
 </template>
 <script lang="ts" setup>
 import gsap from "gsap";
+import * as gui from "dat.gui"
 import * as THREE from "three";
 import * as CANNON from "cannon-es"
 import { useEventListener } from "@/hooks/useEventListener";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+// 顶点着色器
+import basicVertexShader from "@/shader/smart-city/vertex.glsl?raw"
+// 片元着色器
+import basicFragmentShader from "@/shader/smart-city/fragment.glsl?raw"
+// 1、导入场景
+import scene from "./scene"
+// 2、导入相机
+import camera from "./camera"
+import { createCity } from "./mesh";
 
+
+
+scene.add(camera);
 console.log(CANNON);
 
 // const gui = new dat.GUI();
-// 1、创建场景
-const scene = new THREE.Scene();
-
-// 2、创建相机
-const camera = new THREE.PerspectiveCamera(
-  45,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  300
-);
-
-
-// 设置相机位置
-camera.position.set(0, 0, 18);
-scene.add(camera);
 
 // 初始化渲染器
 // 渲染器透明
 const renderer = new THREE.WebGLRenderer({ alpha: true,antialias: true });
 
-const viewRef = ref<HTMLCanvasElement>()
+const sceneRef = ref<HTMLCanvasElement>()
 
 
+
+createCity()
 
 
 
@@ -61,10 +61,10 @@ onMounted(() => {
   scene.add(axesHelper)
 
 
-  renderer.setSize(viewRef.value!.offsetWidth, viewRef.value!.offsetHeight)
+  renderer.setSize(sceneRef.value!.offsetWidth, sceneRef.value!.offsetHeight)
   // 开启场景中的阴影贴图
   renderer.shadowMap.enabled = true;
-  viewRef?.value?.appendChild(renderer.domElement)
+  sceneRef?.value?.appendChild(renderer.domElement)
 
 
 
@@ -88,11 +88,11 @@ onMounted(() => {
   useEventListener("resize", () => {
     //   console.log("画面变化了");
     // 更新摄像头
-    camera.aspect = viewRef.value!.offsetWidth / viewRef.value!.offsetHeight;
+    camera.aspect = sceneRef.value!.offsetWidth / sceneRef.value!.offsetHeight;
     //   更新摄像机的投影矩阵
     camera.updateProjectionMatrix();
     //   更新渲染器
-    renderer.setSize(viewRef.value!.offsetWidth, viewRef.value!.offsetHeight);
+    renderer.setSize(sceneRef.value!.offsetWidth, sceneRef.value!.offsetHeight);
     //   设置渲染器的像素比
     renderer.setPixelRatio(window.devicePixelRatio);
   });
@@ -110,8 +110,12 @@ onMounted(() => {
 
 </script>
 <style lang="scss" scoped>
-.view {
+.scene {
   width: 100vw;
   height: 100vh;
+  position:fixed;
+  left: 0;
+  top: 0;
+  z-index: 99;
 }
 </style>
