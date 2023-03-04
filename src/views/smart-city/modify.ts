@@ -104,7 +104,7 @@ const addLightWave = (shader:THREE.Shader,center:THREE.Vector2 = new THREE.Vecto
   // 设置条带的宽度
   shader.uniforms.uSpreadWidth = { value: 400.0 };
   // 设置条带的颜色 在裁剪空间颜色值的基础上进行混合
-  let color = rgb255To1(245, 221, 220,1);
+  let color = rgb255To1(255, 255, 255,1);
   shader.uniforms.uColor = { value: new THREE.Vector4(color.r,color.g,color.b,color.a) };
   shader.fragmentShader = shader.fragmentShader.replace(
     "#include <common>",
@@ -168,23 +168,24 @@ const addLightLine = (shader:THREE.Shader) =>{
         
         `
     )
-    // shader.fragmentShader = shader.fragmentShader.replace(
-    //   "// #lightWaveEnd",
-    //   `
-    //     // #lightWaveEnd
-    //     // _index = fract(((_index-0.5)*2.0));
-    //     float LightLineMix = -(vPosition.x+vPosition.z-lightLineTime)*(vPosition.x+vPosition.z-lightLineTime)+lightLineWidth;
-  
-    //     if(LightLineMix>0.0){
-    //         gl_FragColor = mix(gl_FragColor,vec4(0.8,1.0,1.0,1),LightLineMix /lightLineWidth);
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "// #lightWaveEnd",
+      `
+        // #lightWaveEnd
+        // _index = fract(((_index-0.5)*2.0));
+        // float LightLineMix = -(vPosition.x+vPosition.z-lightLineTime)*(vPosition.x+vPosition.z-lightLineTime)+lightLineWidth;
+        // 小于零 混合函数混合出的是材质颜色值，不是光带颜色值
+        // if(LightLineMix>0.0){
+            gl_FragColor = mix(gl_FragColor,vec4(0.8,1.0,1.0,1),lightLineWidth);
+            // gl_FragColor = mix(gl_FragColor,vec4(0.8,1.0,1.0,1),LightLineMix /lightLineWidth);
             
-    //     }
+        // }
 
-    //     // #lightLineEnd
-    //   `
-    // )
+        // #lightLineEnd
+      `
+    )
     // 动画循环 修改lSpreadTime的值 
-    gsap.to(shader.uniforms.lSpreadTime, {
+    gsap.to(shader.uniforms.lightLineTime, {
       value: 1500,
       duration: 2,
       ease: "none",
@@ -193,7 +194,44 @@ const addLightLine = (shader:THREE.Shader) =>{
 }
 
 
+function addToTopLine(shader:THREE.Shader) {
+  //   扩散的时间
+  shader.uniforms.uToTopTime = { value: 0 };
+  //   设置条带的宽度
+  shader.uniforms.uToTopWidth = { value: 40 };
 
+  shader.fragmentShader = shader.fragmentShader.replace(
+    "#include <common>",
+    `
+          #include <common>
+    
+          
+          uniform float uToTopTime;
+          uniform float uToTopWidth;
+          `
+  );
+
+  shader.fragmentShader = shader.fragmentShader.replace(
+    "//#end#",
+    `
+        float ToTopMix = -(vPosition.y-uToTopTime)*(vPosition.y-uToTopTime)+uToTopWidth;
+    
+        if(ToTopMix>0.0){
+            gl_FragColor = mix(gl_FragColor,vec4(0.8,0.8,1,1),ToTopMix /uToTopWidth);
+            
+        }
+    
+        //#end#
+        `
+  );
+
+  gsap.to(shader.uniforms.uToTopTime, {
+    value: 500,
+    duration: 3,
+    ease: "none",
+    repeat: -1,
+  });
+}
 
 
 // 取值范围为0-255之间的rgb值转换成0-1

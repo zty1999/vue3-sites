@@ -1012,6 +1012,7 @@ varying  传递属性   从顶点着色器像片元着色器传递变量
 distance(p0,p1) 计算两个向量之间的距离
 mix(x,y,a) 返回线性混合的x和y
 取除以1的余数 fract(x) 返回x-floor(x),即返回x的小数部分  == mod(x,1.0)
+pow(x,y) （求x的y次幂）
 
 shaderMaterial uniforms  指定传入着色器的数据  着色器中使用 uniform 声明接收
 自定义 attributes 和 uniforms(Custom attributes and uniforms)
