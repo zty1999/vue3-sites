@@ -168,6 +168,25 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     },
 
   },
+  {
+    path: '/image-to-particles',
+    name: 'image-to-particles',
+    component: () => import('@/views/image-to-particles/image-to-particles.vue'),
+    meta: {
+
+    },
+
+  },
+  // 3d地球 飞线
+  {
+    path: '/3d-earth',
+    name: '3d-earth',
+    component: () => import('@/views/3d-earth/3d-earth.vue'),
+    meta: {
+
+    },
+
+  },
 ]
 
 

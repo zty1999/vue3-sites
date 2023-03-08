@@ -1,6 +1,7 @@
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  /* 在1920设计稿中1rem等于100px，.32rem等于32px */
+  font-size: calc(100vw / 19.2);
   line-height: 24px;
   font-weight: 400;
 
@@ -24,6 +25,8 @@ a:hover {
   color: #535bf2;
 }
 
+
+
 body {
   margin: 0;
   display: flex;
@@ -32,7 +35,8 @@ body {
   min-height: 100vh;
   width: 100%;
   height: 100%;
-}
+  font-size: 16px;
+}    
 
 h1 {
   /* font-size: 3.2em;

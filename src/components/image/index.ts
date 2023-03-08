@@ -1,4 +1,4 @@
-import { withInstall } from '@/utils'
+import { withInstall } from '@/utils/install'
 
 import image from './src/image.vue'
 

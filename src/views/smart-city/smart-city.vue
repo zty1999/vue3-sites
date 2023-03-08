@@ -1,121 +1,92 @@
 <template>
-  <div class="scene" ref="sceneRef"></div>
+<div class="smart-city" ref="smartCity">
+  <city-scene></city-scene>
+  <operate-scene :dataInfo="dataInfo" :eventList="eventList"></operate-scene>
+</div>
 </template>
 <script lang="ts" setup>
+import { getSmartCityInfo } from '@/api/smart-city-api';
+import { AxiosError, AxiosResponse } from 'axios';
 import gsap from "gsap";
-import * as gui from "dat.gui"
-import * as THREE from "three";
-import * as CANNON from "cannon-es"
-import { useEventListener } from "@/hooks/useEventListener";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-// 顶点着色器
-import basicVertexShader from "@/shader/smart-city/vertex.glsl?raw"
-// 片元着色器
-import basicFragmentShader from "@/shader/smart-city/fragment.glsl?raw"
-// 1、导入场景
-import scene from "./scene"
-// 2、导入相机
-import camera from "./camera"
-import { createCity } from "./mesh";
-
-
-
-scene.add(camera);
-console.log(CANNON);
-
-// const gui = new dat.GUI();
-
-// 初始化渲染器
-// 渲染器透明
-const renderer = new THREE.WebGLRenderer({ alpha: true,antialias: true });
-
-const sceneRef = ref<HTMLCanvasElement>()
-
-
-
-createCity()
-
-
-
-
-
-
-
-// 创建物理世界
-// const world = new CANNON.World({ gravity: 9.8 });
-const world = new CANNON.World();
-world.gravity.set(0, -9.8, 0);
-
-
-
+import dayjs from 'dayjs'
+// 全屏控制
+import { useScreenFull } from "@/hooks/useScreenFull"
+import renderer from './renderer';
+const dataInfo = reactive<{ [key: string]: { number: number, name: string, unit: string } }>({
+  iot: { number: 0, name: '', unit: '' },
+  event: { number: 0, name: '', unit: '' },
+  power: { number: 0, name: '', unit: '' },
+  test: { number: 0, name: '', unit: '' },
+});
+const smartCity = ref<Element>()
 
 
 onMounted(() => {
+  //   双击 渲染画面进行全屏切换
+  useScreenFull(smartCity.value, "dblclick")
+  changeInfo();
+  getEventList();
+  // setInterval(() => {
+  //   changeInfo();
+  //   getEventList();
+  // }, 10000);
+});
+const changeInfo = async () => {
+  // let res = await getSmartCityInfo().catch((error:AxiosError)=>{
+  //   console.log(error);
+  //   // throw new Error(error.message);
 
-  //创建轨道控制器
-  const controls = new OrbitControls(camera, renderer.domElement);
-  // 设置控制器阻尼，让控制器更有真实效果,必须在动画循环里调用.update()。
-  controls.enableDamping = true;
-  // 添加坐标轴辅助器
-  const axesHelper = new THREE.AxesHelper(5);
-  scene.add(axesHelper)
-
-
-  renderer.setSize(sceneRef.value!.offsetWidth, sceneRef.value!.offsetHeight)
-  // 开启场景中的阴影贴图
-  renderer.shadowMap.enabled = true;
-  sceneRef?.value?.appendChild(renderer.domElement)
-
-
-
-
-  // 设置时钟
-  // const clock = new THREE.Clock();
-  const render = () => {
-    // let time = clock.getElapsedTime();
-    // let deltaTime = clock.getDelta();
-
-    // 使用渲染器，通过相机将场景渲染进来
-    renderer.render(scene, camera);
-    //   渲染下一帧的时候就会调用render函数
-    requestAnimationFrame(render);
-  }
-  render()
-
-
-
-  // 监听画面变化，更新渲染画面
-  useEventListener("resize", () => {
-    //   console.log("画面变化了");
-    // 更新摄像头
-    camera.aspect = sceneRef.value!.offsetWidth / sceneRef.value!.offsetHeight;
-    //   更新摄像机的投影矩阵
-    camera.updateProjectionMatrix();
-    //   更新渲染器
-    renderer.setSize(sceneRef.value!.offsetWidth, sceneRef.value!.offsetHeight);
-    //   设置渲染器的像素比
-    renderer.setPixelRatio(window.devicePixelRatio);
+  // }) ;
+  dataInfo.iot = { number: 55, name: '', unit: '' };
+  dataInfo.event = { number: 45, name: '', unit: '' };
+  dataInfo.power = { number: 66, name: '', unit: '' };
+  dataInfo.test = { number: 554, name: '', unit: '' };
+  gsap.to(dataInfo['iot'], {
+    number: 55,
+    duration: 1,
   });
-})
+  // console.log(res);
+  // dataInfo.iot = res.data.data.iot;
+  // dataInfo.event = res.data.data.event;
+  // dataInfo.power = res.data.data.power;
+  // dataInfo.test = res.data.data.test;
+  console.log(dataInfo);
 
+  // for (let key in dataInfo) {
+  //   dataInfo[key].name = res.data.data[key].name;
+  //   dataInfo[key].unit = res.data.data[key].unit;
+  //   gsap.to(dataInfo[key], {
+  //     number: res.data.data[key].number,
+  //     duration: 1,
+  //   });
+  // }
 
+  // console.log(dataInfo);
+};
 
-
-
-
-
-
-
-
+const eventList = ref<{[key:string]:string}[]>([]);
+const getEventList = () => {
+  // let result = await getSmartCityList();
+  // eventList.value = result.data.list;
+  // console.log(result.data.list);
+  eventList.value = [
+    {
+      name:'电力',
+      time:dayjs(new Date()).format("YYYY-MM-DDD"),
+      type:'INFO'
+    },
+    {
+      name:'火警',
+      time:dayjs(new Date()).format("YYYY-MM-DDD"),
+      type:'INFO'
+    },
+    {
+      name:'治安',
+      time:dayjs(new Date()).format("YYYY-MM-DDD"),
+      type:'INFO'
+    }
+  ]
+};
 
 </script>
-<style lang="scss" scoped>
-.scene {
-  width: 100vw;
-  height: 100vh;
-  position:fixed;
-  left: 0;
-  top: 0;
-  z-index: 99;
-}
-</style>
+<style lang="scss" scoped></style>

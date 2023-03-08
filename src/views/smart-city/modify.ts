@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import gsap from "gsap"
+import {rgb255To1} from '@/utils/colorConvert'
 export function modifyCityMaterial(mesh: THREE.Mesh) {
   // onBeforeCompile 在编译shader程序之前立即执行的可选回调
   (mesh.material as THREE.Material).onBeforeCompile = (shader) => {
-    console.log(shader);
     // 裁剪空间坐标值 gl_Position:vec4    vertex 顶点着色器中获取
     // 裁剪空间颜色值 gl_FragColor:vec4    fragment 片元着色器
     setShaderVarible(shader)
@@ -14,21 +14,10 @@ export function modifyCityMaterial(mesh: THREE.Mesh) {
     addLightWave(shader)
     // 添加光线掠过特效
     addLightLine(shader)
-    console.log(shader.fragmentShader);
-
-    // console.log(shader.vertexShader);
     // console.log(shader.fragmentShader);
-    // shader.fragmentShader = shader.fragmentShader.replace(
-    //   "#include <dithering_fragment>",
-    //   `
-    //     #include <dithering_fragment>
-    //     //#end#
-    // `
-    // );
-    // addGradColor(shader, mesh);
-    // addSpread(shader);
-    // addLightLine(shader);
-    // addToTopLine(shader);
+    // 添加建筑表面光线向上特效
+    addToTopLine(shader);
+ 
   };
 }
 // 统一声明 shader 通用变量
@@ -168,22 +157,59 @@ const addLightLine = (shader:THREE.Shader) =>{
         
         `
     )
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "// #lightWaveEnd",
-      `
-        // #lightWaveEnd
-        // _index = fract(((_index-0.5)*2.0));
-        // float LightLineMix = -(vPosition.x+vPosition.z-lightLineTime)*(vPosition.x+vPosition.z-lightLineTime)+lightLineWidth;
-        // 小于零 混合函数混合出的是材质颜色值，不是光带颜色值
-        // if(LightLineMix>0.0){
-            gl_FragColor = mix(gl_FragColor,vec4(0.8,1.0,1.0,1),lightLineWidth);
-            // gl_FragColor = mix(gl_FragColor,vec4(0.8,1.0,1.0,1),LightLineMix /lightLineWidth);
-            
-        // }
 
-        // #lightLineEnd
+    shader.fragmentShader = shader.fragmentShader.replace(
+      `// #lightWaveEnd`,
+      `
+      // #lightWaveEnd
+      float LightLineMix = -(vPosition.x+vPosition.z-lightLineTime)*(vPosition.x+vPosition.z-lightLineTime)+lightLineWidth;
+      if(LightLineMix > 0.0){
+          gl_FragColor =  mix(gl_FragColor,vec4(0.8,1.0,1.0,1),LightLineMix /lightLineWidth);
+          
+      }
+      // #lightLineEnd
       `
     )
+    
+    // shader.fragmentShader = shader.fragmentShader.replace(
+    //   "// #lightWaveEnd",
+    //   `
+    //     // #lightWaveEnd
+    //     // vPosition.x + lightLineTime
+    //     // x轴大于0.5 渲染色2 小于0.5 渲染色1
+    //     // gl_FragColor=  mix(gl_FragColor,vec4(0.8,1.0,1.0,1),step(0.5,vPosition.x)); 
+        
+     
+    //     // gl_FragColor=  mix(gl_FragColor,vec4(0.8,1.0,1.0,1),vPosition.x/lightLineWidth/2.0 ); 
+    //     // vec4 lightColor = vec4(0.8,1.0,1.0,1,0.2);
+    //     // y = -x   y=-x+time
+    //         float x = vPosition.x;
+    //         float lighty = -x*1.2 + lightLineTime;// 该时间下，颜色进行修改的坐标y轴位置
+    //         float alpha = abs(vPosition.y - lighty);
+    //         // 应修改的位置与当前空间坐标位置差值小于0.1
+    //         if(alpha < 0.1){
+    //             float a = 1.0 -  alpha / 0.1;
+    //             float enda = smoothstep(0.0,1.0,a) + 0.3;
+    //             gl_FragColor =  mix(gl_FragColor,vec4(0.8,1.0,1.0,1),1.0-alpha);
+    //         }
+    //         // else{
+    //         //     gl_FragColor = mix(gl_FragColor,vec4(0.8,1.0,1.0,1),0.3);
+    //         // }
+
+
+
+    //     // _index = fract(((_index-0.5)*2.0));
+    //     // float LightLineMix = -(vPosition.x+vPosition.z-lightLineTime)*(vPosition.x+vPosition.z-lightLineTime)+lightLineWidth;
+    //     // 小于零 混合函数混合出的是材质颜色值，不是光带颜色值
+    //     // if(LightLineMix>0.0){
+    //         // gl_FragColor = mix(gl_FragColor,vec4(0.8,1.0,1.0,1),lightLineWidth);
+    //         // gl_FragColor = mix(gl_FragColor,vec4(0.8,1.0,1.0,1),LightLineMix /lightLineWidth);
+            
+    //     // }
+
+    //     // #lightLineEnd
+    //   `
+    // )
     // 动画循环 修改lSpreadTime的值 
     gsap.to(shader.uniforms.lightLineTime, {
       value: 1500,
@@ -194,34 +220,38 @@ const addLightLine = (shader:THREE.Shader) =>{
 }
 
 
-function addToTopLine(shader:THREE.Shader) {
+function addToTopLine(shader:THREE.Shader,config:{color:string,width:number,time:number} = {color: '255,255,255,0.8',width:40,time:0.0}) {
+  let { color,width,time } = config;
   //   扩散的时间
-  shader.uniforms.uToTopTime = { value: 0 };
+  shader.uniforms.uToTopTime = { value: time };
   //   设置条带的宽度
-  shader.uniforms.uToTopWidth = { value: 40 };
-
+  shader.uniforms.uToTopWidth = { value: width };
+  //   设置条带的颜色
+  let rgba = rgb255To1(color);
+  shader.uniforms.uToTopColor = { value:  new THREE.Vector4(rgba.r,rgba.g,rgba.b,rgba.a)};
+  
   shader.fragmentShader = shader.fragmentShader.replace(
     "#include <common>",
     `
           #include <common>
-    
-          
           uniform float uToTopTime;
           uniform float uToTopWidth;
+          uniform vec4 uToTopColor;
           `
   );
 
   shader.fragmentShader = shader.fragmentShader.replace(
-    "//#end#",
+    "// #lightLineEnd",
     `
+    // #lightLineEnd
         float ToTopMix = -(vPosition.y-uToTopTime)*(vPosition.y-uToTopTime)+uToTopWidth;
     
         if(ToTopMix>0.0){
-            gl_FragColor = mix(gl_FragColor,vec4(0.8,0.8,1,1),ToTopMix /uToTopWidth);
+            gl_FragColor = mix(gl_FragColor,uToTopColor,ToTopMix /uToTopWidth);
             
         }
     
-        //#end#
+        //#toTopLineEnd#
         `
   );
 
@@ -234,7 +264,8 @@ function addToTopLine(shader:THREE.Shader) {
 }
 
 
-// 取值范围为0-255之间的rgb值转换成0-1
-const rgb255To1 = (r: number, g: number, b: number, a?: number) => {
-  return { r: r / 255, g: g / 255, b: b / 255, a }
-}
+
+
+// const rgb255To1 = (r: number, g: number, b: number, a?: number) => {
+//   return { r: r / 255, g: g / 255, b: b / 255, a }
+// }

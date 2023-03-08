@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Vector3 } from "three";
 
 const camera = new THREE.PerspectiveCamera(
   45,
@@ -9,7 +10,7 @@ const camera = new THREE.PerspectiveCamera(
 
 
 // 设置相机位置
-camera.position.set(0, 0, 18);
-
+camera.position.set(0, 20, 18);
+camera.lookAt(new Vector3(0,0,0)); //设置相机方向(指向的场景对象)
 
 export default camera

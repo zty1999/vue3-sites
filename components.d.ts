@@ -7,8 +7,10 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    CityScene: typeof import('./src/views/smart-city/components/city-scene.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Image: typeof import('./src/components/image/src/image.vue')['default']
+    OperateScene: typeof import('./src/views/smart-city/components/operate-scene.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SnowFlake: typeof import('./src/components/three-particles/snow-flake.vue')['default']

@@ -174,6 +174,9 @@ export default  function animate(cube:Mesh) {
 一个简单的矩形由两个三角形组成。
 创建一个简单的矩形，需要6个顶点。
 **TorusGeometry 圆环几何体** 
+**Sprite 精灵** 
+精灵是一个总是面朝着摄像机的平面，通常含有使用一个半透明的纹理。
+不会投射任何阴影
 #### 打造酷炫的三角形
 ```js
   // 添加物体
@@ -1006,13 +1009,20 @@ varying  传递属性   从顶点着色器像片元着色器传递变量
 视图矩阵
 
 内置函数  mod(x,y) 取模  sin()正弦 cos() 余弦  
-边界限制 step(edge,x) x<edge=>0.0 x>edge=>1    =>0~1
+边界限制 step(edge,x) `x<edge=>0.0` `x>edge=>1`    =>0~1
 钳制 clamp(x,min,max) x<min=>min x>max=>max    =>min~max
 绝对值 abs() 
 distance(p0,p1) 计算两个向量之间的距离
 mix(x,y,a) 返回线性混合的x和y
 取除以1的余数 fract(x) 返回x-floor(x),即返回x的小数部分  == mod(x,1.0)
 pow(x,y) （求x的y次幂）
+
+threejs 内置函数
+
+smoothstep => step `x<edge=>0.0` `x>edge=>1`    =>0~1
+smootherstep 比 smoothstep 变动更平缓
+
+
 
 shaderMaterial uniforms  指定传入着色器的数据  着色器中使用 uniform 声明接收
 自定义 attributes 和 uniforms(Custom attributes and uniforms)
@@ -1031,6 +1041,14 @@ texture2D 2d纹理
 宏定义 #define  
 
 
+
+输入空间坐标  输出颜色值
+如传入时间变量，时间变化，颜色修改值变大
+时间值规律   
+时间为1  坐标为0  颜色修改值 xx   时间为1 坐标为1 颜色修改值 0
+时间为2  坐标为0  颜色修改值 0   时间为2 坐标为1 颜色修改值 xx
+
+时间与坐标对应
 
 
 ## 其它

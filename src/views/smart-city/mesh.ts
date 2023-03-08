@@ -6,6 +6,10 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import {modifyCityMaterial} from "./modify"
 // 生成线框
 import MeshLine from "./mesh-line";
+import FlyLine from "./flyLine";
+import LightRadar from "./lightRadar";
+import LightWall from "./lightWall";
+import AlarmSprite from "./alarmSprite";
 export const createCity = () =>{
   const gltfLoader = new GLTFLoader();
   gltfLoader.setPath('/public/')
@@ -33,26 +37,27 @@ export const createCity = () =>{
     scene.add(gltf.scene);
 
     // 添加飞线
-    // const flyLine = new FlyLine();
-    // scene.add(flyLine.mesh);
+    const flyLine = new FlyLine();
+    scene.add(flyLine.mesh);
 
     // // 添加着色器飞线
     // const flyLineShader = new FlyLineShader();
     // scene.add(flyLineShader.mesh);
-    // // 添加雷达
-    // const lightRadar = new LightRadar();
-    // scene.add(lightRadar.mesh);
+    // 添加雷达
+    const lightRadar = new LightRadar();
+    scene.add(lightRadar.mesh);
 
     // 添加光墙
-    // const lightWall = new LightWall();
-    // scene.add(lightWall.mesh);
+    const lightWall = new LightWall();
+    scene.add(lightWall.mesh);
 
     // 添加警告标识
-    // const alarmSprite = new AlarmSprite();
-    // scene.add(alarmSprite.mesh);
-    // alarmSprite.onClick(function (e) {
-    //   console.log("警告", e);
-    // });
+    const alarmSprite = new AlarmSprite();
+    scene.add(alarmSprite.mesh);
+    // 设置警告标识点击事件
+    alarmSprite.onClick(function (e:any) {
+      console.log("警告", e);
+    });
   });
 
 }
