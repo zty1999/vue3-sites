@@ -1,7 +1,12 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  /* 在1920设计稿中1rem等于100px，.32rem等于32px */
-  font-size: calc(100vw / 19.2);
+
   line-height: 24px;
   font-weight: 400;
 
@@ -16,27 +21,49 @@
   -webkit-text-size-adjust: 100%;
 }
 
+body {
+  margin: 0;
+  /* display: flex;
+  place-items: center; */
+  min-width: 320px;
+  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+  /* font-size: 16px; */
+
+}
+
+@media screen and (max-width:376px) {
+  html {
+    font-size: calc(100vw / 3.75);
+
+  }
+}
+
+@media screen and (min-width:377px) and (max-width:1920px) {
+  html {
+    /* 在1920设计稿中1rem等于100px，.32rem等于32px */
+    font-size: calc(100vw / 19.2);
+  }
+}
+
+p {
+  margin: 0;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
 
 
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  width: 100%;
-  height: 100%;
-  font-size: 16px;
-}    
+
 
 h1 {
   /* font-size: 3.2em;
@@ -54,9 +81,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -69,8 +98,7 @@ button:focus-visible {
 #app {
   width: 100%;
   height: 100%;
-  min-width: 1200px;
-  text-align: center;
+  /* min-width: 1200px; */
 }
 
 @media (prefers-color-scheme: light) {
@@ -78,9 +106,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
@@ -88,36 +118,7 @@ button:focus-visible {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.secondary {
+  font-size: 0.12rem;
+  color: #dee1e6;
+}

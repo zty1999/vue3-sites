@@ -26,7 +26,7 @@ setupRouter(app);
 
 
 
-import  '@/utils/index'
+import '@/utils/index'
 
 
 
