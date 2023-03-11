@@ -1,13 +1,12 @@
 <template>
   <div class="note-nav">
     <div class="left" @click="leftClick">
-      &lt;
+      <svg-back/>
     </div>
     <div class="center">
-      {{ props.title }}
     </div>
     <div class="right">
-
+      <slot name="right"></slot>
     </div>
   </div>
 </template>

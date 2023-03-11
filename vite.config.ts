@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import Components from 'unplugin-vue-components/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import { resolve } from 'path';
@@ -8,11 +9,14 @@ import Unocss from 'unocss/vite';
 export default defineConfig({
   plugins: [
     vue(),
+    vueJsx({}),
     // 自动注册components目录下的组件
     Components({
       dirs: ['src/components', 'src/**/components'], // 用于搜索组件的目录的相对路径 默认只搜索src/components/ 下的组件
       // dts: resolve(pathSrc, 'components.d.ts'),
-      resolvers: [ ]
+      resolvers: [ ],
+      // valid file extensions for components.
+      extensions: ['vue','tsx'],
     }),
     // 按需自动导入 API
     AutoImport({

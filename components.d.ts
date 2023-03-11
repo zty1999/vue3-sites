@@ -7,6 +7,8 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Back: typeof import('./src/components/svg/back.tsx')['default']
+    BsInput: typeof import('./src/components/input/bs-input.tsx')['default']
     CityScene: typeof import('./src/views/smart-city/components/city-scene.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     HomeList: typeof import('./src/views/note/components/home-list.vue')['default']
@@ -20,8 +22,10 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SnowFlake: typeof import('./src/components/three-particles/snow-flake.vue')['default']
+    SpeedDial: typeof import('./src/views/note/components/speed-dial.vue')['default']
     SpiralGalaxy: typeof import('./src/components/three-particles/spiral-galaxy.vue')['default']
     StarrySky: typeof import('./src/components/three-particles/starry-sky.vue')['default']
+    SvgBack: typeof import('./src/components/svg/svg-back.tsx')['default']
     Triangle: typeof import('./src/components/triangle.vue')['default']
   }
 }
