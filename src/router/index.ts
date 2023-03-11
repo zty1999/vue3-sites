@@ -187,6 +187,16 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     },
 
   },
+    // 智慧园区
+    {
+      path: '/smart-park',
+      name: 'smart-park',
+      component: () => import('@/views/smart-park/smart-park.vue'),
+      meta: {
+  
+      },
+  
+    },
 ]
 
 

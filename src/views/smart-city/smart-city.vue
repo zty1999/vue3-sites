@@ -86,6 +86,8 @@ const getEventList = () => {
       type:'INFO'
     }
   ]
+  console.log(eventList.value);
+  
 };
 
 </script>
