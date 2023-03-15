@@ -7,13 +7,13 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    Back: typeof import('./src/components/svg/back.tsx')['default']
+    BaseInput: typeof import('./src/components/input/base-input.tsx')['default']
     BsInput: typeof import('./src/components/input/bs-input.tsx')['default']
     CityScene: typeof import('./src/views/smart-city/components/city-scene.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     HomeList: typeof import('./src/views/note/components/home-list.vue')['default']
     Image: typeof import('./src/components/image/src/image.vue')['default']
-    List: typeof import('./src/views/note/components/list.vue')['default']
+    Input: typeof import('./src/components/input/input.tsx')['default']
     ListNav: typeof import('./src/views/note/components/list-nav.vue')['default']
     NoteNav: typeof import('./src/views/note/components/note-nav.vue')['default']
     OperateScene: typeof import('./src/views/smart-city/components/operate-scene.vue')['default']
@@ -26,6 +26,7 @@ declare module '@vue/runtime-core' {
     SpiralGalaxy: typeof import('./src/components/three-particles/spiral-galaxy.vue')['default']
     StarrySky: typeof import('./src/components/three-particles/starry-sky.vue')['default']
     SvgBack: typeof import('./src/components/svg/svg-back.tsx')['default']
+    Tinymce: typeof import('./src/components/editor/tinymce/tinymce.vue')['default']
     Triangle: typeof import('./src/components/triangle.vue')['default']
   }
 }
