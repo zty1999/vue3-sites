@@ -1,6 +1,6 @@
 <template>
   <div class="nav">
-    <p class="nav-title">spark-note</p>
+    <p class="nav-title">明谙笔记</p>
   </div>
 </template>
 <script lang="ts" setup>

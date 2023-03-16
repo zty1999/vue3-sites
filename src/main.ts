@@ -25,8 +25,13 @@ const app = createApp(App);
 setupRouter(app);
 
 
+// 移动端触摸 
+setupTouch(app);
+
+
 
 import '@/utils/index'
+import { setupTouch } from './directives/hammerjs';
 
 
 

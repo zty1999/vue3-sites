@@ -1,7 +1,7 @@
 <template>
   <div class="note-nav">
-    <div class="left" @click="leftClick">
-      <svg-back/>
+    <div class="left" v-tap="leftClick">
+      <svg-back />
     </div>
     <div class="center">
     </div>
@@ -15,7 +15,8 @@ const props = withDefaults(defineProps<{ title?: string }>(), {
   title: '标题'
 })
 const router = useRouter()
-const leftClick = () => {
+const leftClick = (e: any) => {
+  console.log(e);
   router.go(-1)
 }
 </script>

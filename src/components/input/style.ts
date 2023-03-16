@@ -1,15 +1,11 @@
-import styled from "vue3-styled-components";
+import styled from "vue3-styled-component";
 
+import { withInstall } from '@/utils/install'
+export const styledBaseInput = withInstall(styled.input`
+width: 100%;
+height: 40px;
+border:none;
+outline:none;
+border-radius: 6px;
 
-export const baseInput = styled.div`
-  border:none;
-  background-color: red;
-  > .content {
-    width: 1032px;
-    margin: 0 auto;
-
-    > div {
-      margin-top: 30px;
-    }
-  }
-`
+`)
