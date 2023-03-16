@@ -13,16 +13,17 @@ import basicVertexShader from "@/shader/smart-city/vertex.glsl?raw"
 // 片元着色器
 import basicFragmentShader from "@/shader/smart-city/fragment.glsl?raw"
 // 1、导入场景
-import scene from "../scene"
+import scene from "../three/scene"
 // 2、导入相机
-import camera from "../camera"
-import { createCity } from "../mesh";
+import camera from "../three/camera"
+import City from "../three/mesh/City";
+import {createMesh} from "../three/createMesh";
 import eventHub from "@/utils/eventHub";
-import AlarmSprite from "../alarmSprite";
-import controls from "../controls";
-import LightRadar from "../lightRadar";
-import FlyLine from "../flyLine";
-import LightWall from "../lightWall";
+import AlarmSprite from "../three/alarmSprite";
+import controls from "../three/controls";
+import LightRadar from "../three/lightRadar";
+import FlyLine from "../three/flyLine";
+import LightWall from "../three/lightWall";
 
 
 scene.add(camera);
@@ -38,8 +39,8 @@ const sceneRef = ref<HTMLCanvasElement>()
 
 
 
-createCity()
-
+// 创建物体
+let city =  createMesh();
 
 
 // 事件监听

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "vue3-styled-components";
 
 
 export const baseInput = styled.div`
