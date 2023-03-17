@@ -1,0 +1,34 @@
+import * as THREE from "three";
+import {Ref} from "vue"
+// 初始化渲染器
+export const renderer = new THREE.WebGLRenderer({
+  // 渲染器透明
+  alpha: true,
+  // 设置抗锯齿
+  antialias: true,
+  // 设置物理灯光模拟效果
+  // physicallyCorrectLights: true,
+  // 设置对数深度缓冲区
+  logarithmicDepthBuffer: true,
+});
+export default function useRenderer(sceneRef:Ref<HTMLCanvasElement>) {
+
+
+  onMounted(() => {
+    // 设置渲染尺寸大小
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // 开启场景中的阴影贴图
+    renderer.shadowMap.enabled = true;
+    // 调节色调映射
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    // 调节曝光
+    renderer.toneMappingExposure = 0.8;
+
+    renderer.setSize(sceneRef.value!.offsetWidth, sceneRef.value!.offsetHeight)
+    // 开启场景中的阴影贴图
+    renderer.shadowMap.enabled = true;
+    sceneRef?.value?.appendChild(renderer.domElement)
+
+  });
+  return { renderer };
+}

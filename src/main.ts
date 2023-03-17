@@ -24,6 +24,9 @@ const app = createApp(App);
 // 配置路由
 setupRouter(app);
 
+// ui框架 vuetify
+setUpVuetify(app)
+
 
 // 移动端触摸 
 setupTouch(app);
@@ -32,6 +35,7 @@ setupTouch(app);
 
 import '@/utils/index'
 import { setupTouch } from './directives/hammerjs';
+import { setUpVuetify } from './plugins/vuetify';
 
 
 

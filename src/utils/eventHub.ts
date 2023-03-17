@@ -10,7 +10,9 @@ import Mitt from "mitt";
 
 type Events = {
   eventToggle: number;
-  spriteClick:{ event: any, i:number }
+  spriteClick: { event: any, i:number },
+  toggleCamera: string,
+  actionClick: number
 };
 // const emitter = mitt<Events>(); // inferred as Emitter<Events>
 

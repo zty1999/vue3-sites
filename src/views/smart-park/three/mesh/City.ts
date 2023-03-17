@@ -1,139 +1,125 @@
 import * as THREE from "three";
+import gsap from 'gsap';
 // 1、导入场景
-import scene from "../scene"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { Scene } from "three";
-
-
+import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Scene } from "three";
+import cameraModule from '../camera'
+import eventHub from '@/utils/eventHub'
+import {GLTF} from 'three/examples/jsm/loaders/GLTFLoader'
 export default class City {
   scene: THREE.Scene;
-  floor1Group!: THREE.Group;
-  floor2Group!: THREE.Group;
-  wallGroup!: THREE.Group;
-  fighterGroup!: THREE.Group;
-  floor2Tags: any[] = [];
+  gltf!:GLTF;// 模型
+  redcar!:THREE.Object3D<THREE.Event>;// 红色车辆模型
+  loader: GLTFLoader;// 模型加载器
+  mixer!:AnimationMixer;// 动画混合器
+  clip!:AnimationClip;// 当前混合动画
+  action!:AnimationAction;// 所传入的动画剪辑对象的动画动作
+  curve!:THREE.CatmullRomCurve3;// 3维曲线
+  curveProgress:number = 0;// 曲线进程
+
   constructor(scene:THREE.Scene) {
     this.scene = scene;
-    this.floor1Group;
-    this.floor2Group;
-    this.wallGroup;
-    this.floor2Tags = [];
 
-    const gltfLoader = new GLTFLoader();
+    this.loader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath("./draco/");
     dracoLoader.setDecoderConfig({ type: "js" });
     dracoLoader.preload();
-    gltfLoader.setDRACOLoader(dracoLoader);
-    gltfLoader.setPath('/public/draco/')
-
-
-    gltfLoader.load("glb/smart-spark/floor2.glb", (gltf) => {
-      console.log(gltf);
+    this.loader.setDRACOLoader(dracoLoader);
+    this.loader.setPath('/public/models/')
+    this.loader.load("smart-park/city4.glb", (gltf) => {
       scene.add(gltf.scene)
-      this.floor2Group = gltf.scene;
-      let array = ["小型会议室", "核心科技室", "科技展台", "设计总监办公室"];
-      // // 判断子元素是否是物体
-      // gltf.scene.traverse((child) => {
-      //   if (child.isMesh) {
-      //     // console.log(child);
-      //     child.material.emissiveIntensity = 15;
-      //     // child.receiveShadow = true;
-      //     // child.castShadow = true;
-      //   }
-      //   if (array.indexOf(child.name) != -1) {
-      //     // console.log("小型会议室", child);
-      //     const css3dObject = this.createTag(child);
-      //     css3dObject.visible = false;
-      //     this.floor2Tags.push(css3dObject);
-      //     this.floor2Group.add(css3dObject);
-      //   }
-      // });
-      // this.floor2Group.visible = false;
+      this.gltf = gltf;
+      // 场景子元素遍历
+      gltf.scene.traverse((child) => {
+        if (child.name === "热气球") {
+          console.log(child);
+          this.mixer = new THREE.AnimationMixer(child);
+          this.clip = gltf.animations[1];
+          this.action = this.mixer.clipAction(this.clip);
+          this.action.play();
+        }
 
-      // scene.add(this.floor2Group);
-      // });
+        if (child.name === "汽车园区轨迹") {
+          // console.log(child);
+          const line:any = child;
+          line.visible = false;
+          // 根据点创建曲线
+          const points = [];
+          for (
+            let i = line.geometry.attributes.position.count - 1;
+            i >= 0;
+            i--
+          ) {
+            points.push(
+              new THREE.Vector3(
+                line.geometry.attributes.position.getX(i),
+                line.geometry.attributes.position.getY(i),
+                line.geometry.attributes.position.getZ(i)
+              )
+            );
+          }
 
+          this.curve = new THREE.CatmullRomCurve3(points);
+          this.curveProgress = 0;
+          this.carAnimation();
+        }
+
+        if (child.name === "redcar") {
+          console.log(child);
+          this.redcar = child;
+        }
+
+  
+      });
+
+      scene.add(gltf.scene);
+      // });
+      gltf.cameras.forEach((camera) => {
+        // scene.add(camera);
+        cameraModule.add(camera.name, camera);
+      });
      
     });
 
-    gltfLoader.load("glb/smart-spark/floor1.glb", (gltf) => {
-      console.log(gltf);
-      this.floor1Group = gltf.scene;
-
-      // 判断子元素是否是物体
-      // gltf.scene.traverse((child) => {
-      //   if (child.isMesh) {
-      //     // console.log(child);
-      //     child.material.emissiveIntensity = 5;
-      //     // child.receiveShadow = true;
-      //     // child.castShadow = true;
-      //   }
-      // });
-      // this.floor1Group.visible = false;
-      scene.add(gltf.scene);
+    eventHub.on("actionClick", (i) => {
+      console.log(i);
+      this.action.reset();// 热气球动画重置
+      this.clip = this.gltf.animations[i];
+      this.action = this.mixer.clipAction(this.clip);
+      this.action.play();
     });
 
-    gltfLoader.load("glb/smart-spark/wall.glb", (gltf) => {
-      console.log(gltf);
-      scene.add(gltf.scene);
-      this.wallGroup = gltf.scene;
-    });
-
-    gltfLoader.load("glb/smart-spark/Fighter1.glb", (gltf) => {
-      console.log(gltf);
-
-      this.fighterGroup = gltf.scene;
-
-      // this.fighterGroup.visible = false;
-      scene.add(this.fighterGroup);
-      // this.fighterGroup.position.set(3, 42, 68);
-      // this.fighterGroup.traverse((child) => {
-      //   if (child.isMesh) {
-      //     // console.log(child);
-      //     child.material.emissiveIntensity = 15;
-      //     child.position2 = child.position.clone();
-      //   }
-      // });
-      // this.mouse = new THREE.Vector2();
-      // this.raycaster = new THREE.Raycaster();
-      // // 事件监听
-      // window.addEventListener("click", (event) => {
-      //   //   console.log(event);
-      //   //   对时间对象进行加工
-      //   event.mesh = this;
-      //   // 将鼠标位置归一化为设备坐标。x 和 y 方向的取值范围是 (-1 to +1)
-      //   this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      //   this.mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
-
-      //   //通过摄像机和鼠标位置更新射线
-      //   this.raycaster.setFromCamera(this.mouse, cameraModule.activeCamera);
-
-      //   //进行检测
-      //   const intersects = this.raycaster.intersectObject(this.fighterGroup);
-      //   //   console.log(intersects);
-      //   if (intersects.length > 0) {
-      //     //   真正触发精灵的点击事件
-      //     console.log("点击了战斗机");
-      //     if (this.floor2Group.visible) {
-      //       this.floor2Group.visible = false;
-      //       this.floor2Tags.forEach((tag) => {
-      //         tag.visible = false;
-      //       });
-      //     } else {
-      //       this.floor2Group.visible = true;
-      //       this.floor2Tags.forEach((tag) => {
-      //         tag.visible = true;
-      //       });
-      //     }
-      //   }
-    });
-
-    // this.showFighter();
+       
+     
 
   }
 
+  // 更新动画
+  update(time:number) {
+    if (this.mixer) {
+      this.mixer.update(time);
+    }
+  }
+
+
+
+  carAnimation() {
+    gsap.to(this, {
+      curveProgress: 0.999,
+      duration: 10,
+      repeat: -1,
+      onUpdate: () => {
+        const point = this.curve.getPoint(this.curveProgress);
+        this.redcar.position.set(point.x, point.y, point.z);
+        if (this.curveProgress + 0.001 < 1) {
+          const point = this.curve.getPoint(this.curveProgress + 0.001);
+          this.redcar.lookAt(point);
+        }
+      },
+    });
+  }
 
 
 }

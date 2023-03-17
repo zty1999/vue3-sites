@@ -20,15 +20,26 @@ const scene = new THREE.Scene();
 
 
 // 添加圆柱形天空
-const rgbeloader = new RGBELoader();
-const textureFolder = new URL('@/assets/textures/smart-park',import.meta.url).href
-rgbeloader.loadAsync(textureFolder + "/2k.hdr").then((texture) => {
-  // 设置纹理为圆柱形纹理
-  texture.mapping = THREE.EquirectangularReflectionMapping;
-  // 添加天空环境
+// const rgbeloader = new RGBELoader();
+// const textureFolder = new URL('@/assets/textures/smart-park',import.meta.url).href
+// rgbeloader.loadAsync(textureFolder + "/2k.hdr").then((texture) => {
+//   // 设置纹理为圆柱形纹理
+//   texture.mapping = THREE.EquirectangularReflectionMapping;
+//   // 添加天空环境
+//   scene.background = texture;
+//   scene.environment = texture;
+// });
+
+const hdrLoader = new RGBELoader();
+hdrLoader.setPath('/public/textures/smart-park')
+hdrLoader.loadAsync( "/023.hdr").then((texture) => {
   scene.background = texture;
   scene.environment = texture;
+  scene.environment.mapping = THREE.EquirectangularReflectionMapping;
 });
+
+
+
 
 // 场景亮度物理灯光效果
 // 1设置色调映射

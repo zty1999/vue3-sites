@@ -4,6 +4,7 @@
       <svg-back />
     </div>
     <div class="center">
+      <slot></slot>
     </div>
     <div class="right">
       <slot name="right"></slot>
@@ -22,16 +23,28 @@ const leftClick = (e: any) => {
 </script>
 <style lang="scss" scoped>
 .note-nav {
+  position: relative;
   display: flex;
   align-items: center;
+  height: 44px;
 
   .left,
   .right {
+    position: absolute;
+    top: 0;
     padding: 10px;
+  }
+  .left {
+    left: 0;
+  }
+  .right {
+    right: 0;
   }
 
   .center {
     flex: 1;
+    text-align: center;
+    line-height: 44px;
   }
 }
 </style>

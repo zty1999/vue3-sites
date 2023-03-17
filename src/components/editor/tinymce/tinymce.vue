@@ -124,7 +124,7 @@ export default {
         body_class: 'panel-body ',
         object_resizing: false,
         toolbar:  toolbar,
-        menubar: this.menubar,
+        // menubar: this.menubar,
         // plugins: plugins,
         // skin: noteEdit,
         end_container_on_empty_block: true,

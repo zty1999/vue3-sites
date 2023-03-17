@@ -24,6 +24,7 @@ notes = notes.map((note: any) => {
 const toEdit = (item?: any) => {
   console.log(item);
 
+  
   router.push(
     {
       name: 'note-edit',

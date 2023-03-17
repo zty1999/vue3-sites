@@ -21,6 +21,23 @@
   -webkit-text-size-adjust: 100%;
 }
 
+
+
+@media screen and (max-width:378px) {
+  :root {
+    font-size: calc(100vw / 3.75);
+
+  }
+
+}
+
+@media screen and (min-width:377px) and (max-width:1920px) {
+  :root {
+    /* 在1920设计稿中1rem等于100px，.32rem等于32px */
+    font-size: calc(100vw / 19.2);
+  }
+}
+
 body {
   margin: 0;
   /* display: flex;
@@ -29,23 +46,10 @@ body {
   min-height: 100vh;
   width: 100%;
   height: 100%;
-  /* font-size: 16px; */
+  font-size: 16px;
 
 }
 
-@media screen and (max-width:376px) {
-  html {
-    font-size: calc(100vw / 3.75);
-
-  }
-}
-
-@media screen and (min-width:377px) and (max-width:1920px) {
-  html {
-    /* 在1920设计稿中1rem等于100px，.32rem等于32px */
-    font-size: calc(100vw / 19.2);
-  }
-}
 
 p {
   margin: 0;

@@ -1,8 +1,6 @@
 <template>
   <note-nav>
-    <template v-slot="right">
-      ddd
-    </template>
+    {{ headertip }}
   </note-nav>
   <div class="note-edit">
     <div class="note-header">
@@ -17,13 +15,22 @@
 const route = useRoute()
 console.log(route);
 let id = route.query.id
-
+const headertip = ref('') // 头部提示
+const online = ref(true) // 是否在线
 const note = ref<any>({
   title: '',
   content: '',
   createdAt: new Date(),
   // viewAt: new Date(), 
   // updatedAt: new Date(),
+})
+
+onMounted(()=>{
+  if(!navigator.onLine){
+    headertip.value = '文档将离线保存'
+    online.value = false;
+    // message.info('网络未连接，请检查重试')
+  }
 })
 // 编辑
 if (id) {
@@ -35,6 +42,12 @@ if (id) {
 onBeforeRouteLeave((to, from) => {
   // 这里只判断了是否为空 还应该判断是否有变化
   if (note.value.title != '' || note.value.content != '') {
+
+    // if(online){
+    //   onLineSave()
+    // }else {
+    //   offLineSave()
+    // }
     if (!note.value.title) { note.value.title = '无标题' }
     let notes = JSON.parse(localStorage.getItem("notes") as string) || []
     if (!note.value.id) {
@@ -59,6 +72,10 @@ onBeforeRouteLeave((to, from) => {
   // 取消导航并停留在同一页面上
   // if (!answer) return false
 })
+
+
+
+
 watch(() => route,
   (count, prevCount) => {
     /* ... */

@@ -35,24 +35,29 @@ export default defineConfig({
         // presets
         'vue',
         'vue-router',
+        
         // custom
-        // {
-        //   '@vueuse/core': [
-        //     // named imports
-        //     'useMouse', // import { useMouse } from '@vueuse/core',
-        //     // alias
-        //     ['useFetch', 'useMyFetch'], // import { useFetch as useMyFetch } from '@vueuse/core',
-        //   ],
-        //   'axios': [
-        //     // default imports
-        //     ['default', 'axios'], // import { default as axios } from 'axios',
-        //   ],
-        //   '[package-name]': [
-        //     '[import-names]',
-        //     // alias
-        //     ['[from]', '[alias]'],
-        //   ],
-        // },
+        {
+          // 'element-plus': [
+          //   // alias
+          //   ['Elmessage', 'message'],
+          // ],
+          // '@vueuse/core': [
+          //   // named imports
+          //   'useMouse', // import { useMouse } from '@vueuse/core',
+          //   // alias
+          //   ['useFetch', 'useMyFetch'], // import { useFetch as useMyFetch } from '@vueuse/core',
+          // ],
+          // 'axios': [
+          //   // default imports
+          //   ['default', 'axios'], // import { default as axios } from 'axios',
+          // ],
+          // '[package-name]': [
+          //   '[import-names]',
+          //   // alias
+          //   ['[from]', '[alias]'],
+          // ],
+        },
       ],
       resolvers: []
       // dts: resolve(pathSrc, 'auto-imports.d.ts'),

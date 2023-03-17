@@ -3,15 +3,40 @@
     <div class="header">智慧园区</div>
     <div class="main">
       <div class="left">
-        <div class="cityEvent" v-for="(item, key) in props.dataInfo">
+        <div class="cityEvent">
           <h3>
-            <span>{{ item.name }}</span>
+            <span>热气球控制</span>
           </h3>
-          <h1>
-            <img src="@/assets/images/smart-city/bg/bar.svg" class="icon" />
-            <span>{{ toFixInt(item.number) }}（{{ item.unit }}）</span>
+          <h1 @click="toggleAction(0)">
+            <img class="icon" :src="seqIcon" alt="" />
+            <span>设置热气球以横穿园区的动画显示</span>
           </h1>
-          <div class="footerBoder"></div>
+          <h1 @click="toggleAction(1)">
+            <img class="icon" :src="seqIcon" alt="" />
+            <span>设置热气球以环绕园区进行运动</span>
+          </h1>
+
+          <div class="footerBorder"></div>
+        </div>
+
+        <div class="cityEvent">
+          <h3>
+            <span>相机控制</span>
+          </h3>
+          <h1 @click="toggleCamera('default')">
+            <img class="icon" :src="seqIcon" alt="" />
+            <span>默认的相机视角</span>
+          </h1> 
+          <h1 @click="toggleCamera('carcamera_Orientation')">
+            <img class="icon" :src="seqIcon" alt="" />
+            <span>设置相机追随汽车导览园区</span>
+          </h1>
+          <h1 @click="toggleCamera('rightcamera_Orientation')">
+            <img class="icon" :src="seqIcon" alt="" />
+            <span>查看汽车司机视角</span>
+          </h1>
+
+          <div class="footerBorder"></div>
         </div>
       </div>
       <div class="right">
@@ -23,6 +48,7 @@
 <script lang="ts" setup>
 import eventHub from "@/utils/eventHub";
 import { ref } from "vue";
+import seqIcon from "@/assets/images/smart-park/bar.svg";
 const props = defineProps(["dataInfo", "eventList"]);
 const imgs:{[key:string]:string} = {
   电力: new URL("@/assets/textures/smart-city/tag/e.png",import.meta.url).href,
@@ -33,10 +59,22 @@ const imgs:{[key:string]:string} = {
 const toFixInt = (num:number) => {
   return num.toFixed(0);
 };
-
 const currentActive = ref<number>();
 
 
+const toggleAction = (i:number) => {
+  console.log(i);
+  eventHub.emit("actionClick", i);
+};
+
+const toggleCamera = (name:string) => {
+  console.log(name);
+  eventHub.emit("toggleCamera", name);
+};
+
+onMounted(()=>{
+
+})
 </script>
 <style lang="scss" scoped>
 #bigScreen {
@@ -175,6 +213,8 @@ h1 {
   padding: 0 0.3rem 0.3rem;
   justify-content: space-between;
   font-size: 0.3rem;
+  pointer-events: auto;
+  cursor:pointer;
 }
 h3 {
   color: #fff;
@@ -192,27 +232,5 @@ h1 span.time {
   font-weight: normal;
 }
 
-.cityEvent li > p {
-  color: #eee;
-  padding: 0rem 0.3rem 0.3rem;
-}
-.list h1 {
-  padding: 0.1rem 0.3rem;
-}
-.cityEvent.list ul {
-  pointer-events: auto;
-  cursor: pointer;
-}
 
-.cityEvent li.active h1 {
-  color: red;
-}
-.cityEvent li.active p {
-  color: red;
-}
-
-ul,
-li {
-  list-style: none;
-}
 </style>

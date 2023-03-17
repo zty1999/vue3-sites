@@ -10,11 +10,11 @@
   const smartPark = ref<Element>()
   
   
-  onMounted(() => {
-    //   双击 渲染画面进行全屏切换
-    useScreenFull(smartPark.value, "dblclick")
+  // onMounted(() => {
+  //   //   双击 渲染画面进行全屏切换
+  //   useScreenFull(smartPark.value, "dblclick")
 
-  });
+  // });
 
   
   </script>
