@@ -12,7 +12,8 @@ type Events = {
   eventToggle: number;
   spriteClick: { event: any, i:number },
   toggleCamera: string,
-  actionClick: number
+  actionClick: number,
+  toggleControls: string
 };
 // const emitter = mitt<Events>(); // inferred as Emitter<Events>
 

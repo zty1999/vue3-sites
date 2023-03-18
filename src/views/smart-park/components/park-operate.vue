@@ -40,7 +40,42 @@
         </div>
       </div>
       <div class="right">
+        <div class="cityEvent list">
+          <h3>
+            <span>切换园区观览模式</span>
+          </h3>
+          <ul>
+            <li @click="toggleControls('Orbit')">
+              <h1>
+                <div>
+                  <img class="icon" :src="dianliIcon" alt="" />
+                  <span> 轨道观览 </span>
+                </div>
+              </h1>
+              <p>可以锁定目标建筑和园区进行轨道式360°查看</p>
+            </li>
+            <li @click="toggleControls('Fly')">
+              <h1>
+                <div>
+                  <img class="icon" :src="dianliIcon" alt="" />
+                  <span> 飞行观览 </span>
+                </div>
+              </h1>
+              <p>可以使用飞行模式进行园区进行观览</p>
+            </li>
+            <li @click="toggleControls('FirstPerson')">
+              <h1>
+                <div>
+                  <img class="icon" :src="dianliIcon" alt="" />
+                  <span> 第一人称 </span>
+                </div>
+              </h1>
+              <p>可以使用第一人称模式进行园区进行观览</p>
+            </li>
+          </ul>
 
+          <div class="footerBorder"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -49,6 +84,8 @@
 import eventHub from "@/utils/eventHub";
 import { ref } from "vue";
 import seqIcon from "@/assets/images/smart-park/bar.svg";
+import dianliIcon from "@/assets/images/smart-park/dianli.svg";
+
 const props = defineProps(["dataInfo", "eventList"]);
 const imgs:{[key:string]:string} = {
   电力: new URL("@/assets/textures/smart-city/tag/e.png",import.meta.url).href,
@@ -70,6 +107,11 @@ const toggleAction = (i:number) => {
 const toggleCamera = (name:string) => {
   console.log(name);
   eventHub.emit("toggleCamera", name);
+};
+
+const toggleControls = (name:string) => {
+  // console.log(i);
+  eventHub.emit("toggleControls", name);
 };
 
 onMounted(()=>{
@@ -232,5 +274,22 @@ h1 span.time {
   font-weight: normal;
 }
 
+.cityEvent li > p {
+  color: #eee;
+  padding: 0rem 0.3rem 0.3rem;
+}
+.list h1 {
+  padding: 0.1rem 0.3rem;
+}
+.cityEvent.list ul {
+  pointer-events: auto;
+  cursor: pointer;
+}
 
+.cityEvent li.active h1 {
+  color: red;
+}
+.cityEvent li.active p {
+  color: red;
+}
 </style>

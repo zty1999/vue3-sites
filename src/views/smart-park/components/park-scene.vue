@@ -21,6 +21,8 @@ import cameraModule from "../three/camera";
 import renderer from "../three/renderer";
 import { createMesh } from "../three/createMesh";
 
+// 控制器
+import controlsModule from '../three/controls'
 const viewRef = ref<HTMLCanvasElement>()
 
 
@@ -28,13 +30,8 @@ let city = createMesh()
 
 onMounted(() => {
 
-  //创建轨道控制器
-  const controls = new OrbitControls(cameraModule.activeCamera, renderer.domElement);
-  // 设置控制器阻尼，让控制器更有真实效果,必须在动画循环里调用.update()。
-  controls.enableDamping = true;
-  // 添加坐标轴辅助器
-  const axesHelper = new THREE.AxesHelper(5);
-  scene.add(axesHelper)
+ 
+
 
 
   renderer.setSize(viewRef.value!.offsetWidth, viewRef.value!.offsetHeight)
@@ -51,6 +48,7 @@ onMounted(() => {
     // let time = clock.getElapsedTime();
     let deltaTime = clock.getDelta();
     city.update(deltaTime)
+    controlsModule.controls.update(deltaTime);
     // 使用渲染器，通过相机将场景渲染进来
     renderer.render(scene, cameraModule.activeCamera);
     //   渲染下一帧的时候就会调用render函数
