@@ -1,8 +1,11 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-
-
 import { router, setupRouter } from '@/router';
+import { setupTouch } from './directives/hammerjs';
+import { setUpVuetify } from './plugins/vuetify';
+import { setupVueUse } from './plugins/vueuse';
+// import '@/utils/index'
+
 
 
 // CSS base style sheet
@@ -32,10 +35,10 @@ setUpVuetify(app)
 setupTouch(app);
 
 
+// @vueuse 相关
+setupVueUse(app)
 
-import '@/utils/index'
-import { setupTouch } from './directives/hammerjs';
-import { setUpVuetify } from './plugins/vuetify';
+
 
 
 
