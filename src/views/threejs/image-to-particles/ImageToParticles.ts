@@ -2,7 +2,7 @@ import * as THREE from "three"
 import gsap from "gsap";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { useEventListener } from "@/hooks/useEventListener";
-import { generateTriangles } from "../3d-scroll/triangles";
+import { generateTriangles } from "../../3d-scroll/triangles";
 
 /**
  * 初始化：
