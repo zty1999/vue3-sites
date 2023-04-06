@@ -10,7 +10,7 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { useEventListener } from "@/hooks/useEventListener";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Material, Vector3 } from "three";
-import Three from "./Three.vue";
+import Three from "./threejs/Three.vue";
 
 // 目标：使用cannon引擎
 console.log(CANNON);

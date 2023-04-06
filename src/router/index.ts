@@ -7,7 +7,6 @@ import {
 import { threejsRoute } from "./modules/threejs"
 
 import { App } from 'vue';
-import * as text from "../locales"
 
 // // import.meta.globEager() 直接引入所有的模块 Vite 独有的功能
 // const modules = import.meta.glob('./modules/**/*.ts', { eager: true });
@@ -26,21 +25,14 @@ import * as text from "../locales"
 export const RootRoute: RouteRecordRaw = {
   path: '/',
   name: 'Root',
-  redirect: '/main',
+  redirect: '/three',
   meta: {
     title: 'Root'
   }
 };
 
 export const MainRoutes: RouteRecordRaw[] = [
-  {
-    path: '/threejs',
-    name: 'Threejs',
-    component: () => import('@/views/Dashboard.vue'),
-    meta: {
-      title: text.router.dashboard
-    }
-  },
+
   {
     path: '/main',
     name: 'Main',
@@ -67,156 +59,10 @@ export const MainRoutes: RouteRecordRaw[] = [
     },
 
   },
-  // {
-  //   path: '/snow-flake',
-  //   name: 'snow-flake',
-  //   // component: () => import('@/components/three-particles/snow-flake.vue'),
-  //   component: () => import('@/views/snow-flake.vue'),
-  //   meta: {
 
-  //   },
 
-  // },
-  {
-    path: '/three',
-    name: 'Three',
-    component: () => import('@/views/Three.vue'),
-    meta: {
 
-    },
 
-  },
-  {
-    path: '/3d-scroll',
-    name: '3d-scroll',
-    component: () => import('@/views/3d-scroll/3d-scroll.vue'),
-    meta: {
-
-    },
-
-  },
-  {
-    path: '/3d-text',
-    name: '3d-text',
-    component: () => import('@/views/3d-text.vue'),
-    meta: {
-
-    },
-
-  },
-  {
-    path: '/physics',
-    name: 'physics',
-    component: () => import('@/views/physics.vue'),
-    meta: {
-
-    },
-
-  },
-  {
-    path: '/shader',
-    name: 'shader',
-    meta: {
-
-    },
-    children: [
-      {
-        path: 'basic',
-        name: 'basic',
-        component: () => import('@/views/shader/basic.vue'),
-        meta: {
-
-        },
-
-      },
-      {
-        path: 'create-pattern',
-        name: 'create-pattern',
-        component: () => import('@/views/shader/create-pattern.vue'),
-        meta: {
-
-        },
-
-      },
-      {
-        path: 'kongming-lantern',
-        name: 'kongming-lantern',
-        component: () => import('@/views/shader/kongming-lantern.vue'),
-        meta: {
-
-        },
-
-      },
-    ]
-
-  },
-  {
-    path: '/earth-moon-rotation',
-    name: 'earth-moon-rotation',
-    component: () => import('@/views/earth-moon-rotation.vue'),
-    meta: {
-
-    },
-
-  },
-  {
-    path: '/smart-city',
-    name: 'smart-city',
-    component: () => import('@/views/smart-city/smart-city.vue'),
-    meta: {
-
-    },
-
-  },
-  // 3d地球 飞线
-  {
-    path: '/3d-earth',
-    name: '3d-earth',
-    component: () => import('@/views/3d-earth/3d-earth.vue'),
-    meta: {
-
-    },
-
-  },
-    // 智慧园区
-    {
-      path: '/smart-park',
-      name: 'smart-park',
-      component: () => import('@/views/smart-park/smart-park.vue'),
-      meta: {
-  
-      },
-  
-    },
-  {
-    path: '/note',
-    name: 'note',
-    component: () => import('@/views/note/note.vue'),
-    meta: {
-
-    },
-    children: [
-      {
-        path: '/note-list',
-        name: 'note-list',
-        component: () => import('@/views/note/note-list.vue'),
-        meta: {
-
-        },
-
-      },
-      {
-        path: '/note-edit',
-        name: 'note-edit',
-        component: () => import('@/views/note/note-edit.vue'),
-        meta: {
-
-        },
-
-      },
-    ]
-
-  },
 
 
 ]
