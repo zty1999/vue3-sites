@@ -9,6 +9,22 @@ https://www.arroway-textures.ch/textures/
 https://quixel.com/ 配合虚幻引擎账号免费使用
 aigei.com  爱给网
 
+**threejs动画参考**
+
+https://kevanstannard.github.io/three-experiments/
+https://tympanus.net/
+https://cloud.tencent.com/developer/user/2838153
+https://www.jotform.com/blog/20-exceptional-three-js-experiments-98740/
+https://fernandojsg.com/projects/
+图片粒子化：https://codepen.io/zadvorsky/pen/VaXqRW
+图片马赛克化：
+geometry.attributes.position.needsUpdate = true;
+粒子：
+https://codepen.io/zadvorsky/pen/qOYqGv
+https://codepen.io/ykob/pen/avEpdd
+飞行：
+https://codepen.io/johnnyrfresh/pen/yOxxBa
+https://tympanus.net/Tutorials/TheAviator/
 **3d text 字体转换**：
 facetype.js
 

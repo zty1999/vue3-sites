@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     HomeList: typeof import('./src/views/note/components/home-list.vue')['default']
     Icon: typeof import('./src/components/icon/icon.tsx')['default']
     Image: typeof import('./src/components/image/src/image.vue')['default']
+    ImgToParticles: typeof import('./src/views/threejs/image-to-particles/components/img-to-particles.vue')['default']
     Input: typeof import('./src/components/input/input.tsx')['default']
     ListNav: typeof import('./src/views/note/components/list-nav.vue')['default']
     Message: typeof import('./src/components/vuetify/message.vue')['default']

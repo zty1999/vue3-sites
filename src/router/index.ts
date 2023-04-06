@@ -4,7 +4,7 @@ import {
   createWebHashHistory,
   RouteRecordRaw
 } from 'vue-router';
-
+import { threejsRoute } from "./modules/threejs"
 
 import { App } from 'vue';
 import * as text from "../locales"
@@ -32,7 +32,7 @@ export const RootRoute: RouteRecordRaw = {
   }
 };
 
-export const ThreejsRoutes: RouteRecordRaw[] = [
+export const MainRoutes: RouteRecordRaw[] = [
   {
     path: '/threejs',
     name: 'Threejs',
@@ -168,15 +168,6 @@ export const ThreejsRoutes: RouteRecordRaw[] = [
     },
 
   },
-  {
-    path: '/image-to-particles',
-    name: 'image-to-particles',
-    component: () => import('@/views/image-to-particles/image-to-particles.vue'),
-    meta: {
-
-    },
-
-  },
   // 3d地球 飞线
   {
     path: '/3d-earth',
@@ -237,7 +228,7 @@ const WHITE_NAME_LIST: string[] = [];
 
 
 
-const routes = [RootRoute, ...ThreejsRoutes]
+const routes = [RootRoute, ...MainRoutes,threejsRoute]
 
 // export const router = createRouter({
 //   history: createWebHistory(process.env.BASE_URL),
