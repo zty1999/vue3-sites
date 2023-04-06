@@ -2,13 +2,16 @@
   <div class="three-demos">
     <div class="demo-list animate__animated animate__fadeInUp">
       <div class="demo-item hvr-grow" @click="showDemo('starry-sky')">
-        <p class="demo-item-title hvr-grow">starry-sky</p>
+        <p class="demo-item-title hvr-grow">{{demos['starry-sky'].title}}</p>
       </div>
       <div class="demo-item hvr-grow" @click="showDemo('snow-flake')">
-        <p class="demo-item-title hvr-grow">snow-flake</p>
+        <p class="demo-item-title hvr-grow">{{demos['snow-flake'].title}}</p>
       </div>
       <div class="demo-item hvr-grow" @click="showDemo('spiral-galaxy')">
-        <p class="demo-item-title hvr-grow">spiral-galaxy</p>
+        <p class="demo-item-title hvr-grow">{{demos['spiral-galaxy'].title}}</p>
+      </div>
+      <div class="demo-item hvr-grow" @click="showDemo('image-to-particles')">
+        <p class="demo-item-title hvr-grow">{{demos['image-to-particles'].title}}</p>
       </div>
     </div>
   </div>
@@ -33,16 +36,7 @@
             <div class="modal-header-title primary-text ">{{ demoTitle }}</div>
           </div>
           <div class="modal-content">
-            <template v-if="currentShowDemo == 'starry-sky'">
-              <component :is="(StarrySky)"></component>
-            </template>
-            <template v-if="currentShowDemo == 'snow-flake'">
-              <component :is="(SnowFlake)"></component>
-            </template>
-            <template v-if="currentShowDemo == 'spiral-galaxy'">
-              <component :is="(SpiralGalaxy)"></component>
-            </template>
-            
+            <component :is="demos[currentShowDemo].component"  showControls></component>
           </div>
         </div>
         </div>
@@ -57,23 +51,36 @@
 import StarrySky from '@/components/three-particles/starry-sky.vue';
 import SnowFlake from '@/components/three-particles/snow-flake.vue';
 import SpiralGalaxy from '@/components/three-particles/spiral-galaxy.vue';
+import ImgToParticles from '@/views/threejs/image-to-particles/components/img-to-particles.vue';
 import { Ref } from 'vue';
-enum Demo {
-  'starry-sky' = '星空',
-  'snow-flake' = '雪花',
-}
-let demos: { [index: string]: string } = {
-  'starry-sky': '星空',
-  'snow-flake': '雪花',
+
+
+let demos: { [index: string]: {title:string,component:any} } = {
+  'starry-sky': {
+    title:'星空',
+    component: StarrySky
+  },
+  'snow-flake': {
+    title:'雪花',
+    component: SnowFlake
+  },
+  'spiral-galaxy': {
+    title:'臂旋星系',
+    component: SpiralGalaxy
+  },
+  'image-to-particles': {
+    title:'图片粒子化',
+    component: ImgToParticles
+  },
 }
 let router = useRouter()
 let currentShowDemo: Ref<string> = ref('')
 let demoTitle: Ref<string> = ref('')
 
-const showDemo = (demoName: string) => {
-  console.log('show demo' + demoName, router);
-  currentShowDemo.value = demoName
-  demoTitle.value = demos[demoName]
+const showDemo = (key: string) => {
+  console.log('show demo' + key, router);
+  currentShowDemo.value = key
+  demoTitle.value = demos[key].title
 }
 </script>
 <style lang="scss" scoped>
@@ -201,6 +208,15 @@ const showDemo = (demoName: string) => {
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+  }
+}
+
+
+
+/* controls  */
+:deep(.c) {
+  input {
+    height: 20px !important;
   }
 }
 </style>
