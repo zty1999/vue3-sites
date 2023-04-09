@@ -141,8 +141,8 @@ const connectMaterial = new CANNON.ContactMaterial(
     // 弹性
     restitution: 0.7,
   })
-  // 添加关联材质到物理世界
-  world.addContactMaterial(connectMaterial);
+// 添加关联材质到物理世界
+world.addContactMaterial(connectMaterial);
 
 
 onMounted(() => {

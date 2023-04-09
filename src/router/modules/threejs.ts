@@ -1,6 +1,6 @@
 import { RouteRecordRaw } from "vue-router";
 
-export const threejsRoute:RouteRecordRaw = {
+export const threejsRoute: RouteRecordRaw = {
   path: '/three',
   name: 'threejs demos',
   meta: {
@@ -9,7 +9,7 @@ export const threejsRoute:RouteRecordRaw = {
     title: 'threejs demos',
     icon: 'ep-menu',
   },
-  children:[
+  children: [
     {
       path: '/image-to-particles',
       name: 'image-to-particles',
@@ -20,6 +20,17 @@ export const threejsRoute:RouteRecordRaw = {
         icon: 'md-home'
       },
       component: () => import('@/views/threejs/image-to-particles/image-to-particles.vue'),
+    },
+    {
+      path: '/haunted-house',
+      name: 'haunted-house',
+      meta: {
+        hideInMenu: false,
+        title: '鬼屋',
+        notCache: true,
+        icon: 'md-home'
+      },
+      component: () => import('@/views/threejs/haunted-house/haunted-house.vue'),
     },
   ]
 }

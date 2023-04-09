@@ -8,7 +8,8 @@ https://3dtextures.me/
 https://www.arroway-textures.ch/textures/
 https://quixel.com/ 配合虚幻引擎账号免费使用
 aigei.com  爱给网
-
+环境贴图：hdrihaven.com 获取 hdr 格式的环境贴图后，
+可使用 https://matheowis.github.io/HDRI-to-CubeMap/ 网站，将其转换为可用于方块环境贴图即6个面的环境贴图。
 **threejs动画参考**
 
 https://kevanstannard.github.io/three-experiments/
