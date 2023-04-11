@@ -5,10 +5,10 @@ import {
   RouteRecordRaw
 } from 'vue-router';
 import { threejsRoute } from "./modules/threejs"
-
 import { App } from 'vue';
-import * as text from "../locales"
-
+import NProgress from "@/utils/progress";
+import { config } from '@/config';
+import { openWindow } from './util';
 // // import.meta.globEager() 直接引入所有的模块 Vite 独有的功能
 // const modules = import.meta.glob('./modules/**/*.ts', { eager: true });
 // const routeModuleList: AppRouteModule[] = [];
@@ -20,31 +20,34 @@ import * as text from "../locales"
 //   routeModuleList.push(...modList);
 // });
 
+
 // export const asyncRoutes = [...routeModuleList];
 
+// export interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
+//   name: string;
+//   meta: RouteMeta;
+//   component?: Component | string;
+//   components?: Component;
+//   children?: AppRouteRecordRaw[];
+//   props?: any;
+//   fullPath?: string;
+// }
 // 根路由
 export const RootRoute: RouteRecordRaw = {
   path: '/',
   name: 'Root',
-  redirect: '/main',
+  redirect: '/three',
   meta: {
     title: 'Root'
   }
 };
 
-export const MainRoutes: RouteRecordRaw[] = [
-  {
-    path: '/threejs',
-    name: 'Threejs',
-    component: () => import('@/views/Dashboard.vue'),
-    meta: {
-      title: text.router.dashboard
-    }
-  },
+export const MainRoutes: AppRouteRecordRaw[] = [
+
   {
     path: '/main',
     name: 'Main',
-    component: () => import('@/views/Main.vue'),
+    component: () => import('@/views/Main/Main.vue'),
     meta: {
 
     }
@@ -67,155 +70,12 @@ export const MainRoutes: RouteRecordRaw[] = [
     },
 
   },
-  // {
-  //   path: '/snow-flake',
-  //   name: 'snow-flake',
-  //   // component: () => import('@/components/three-particles/snow-flake.vue'),
-  //   component: () => import('@/views/snow-flake.vue'),
-  //   meta: {
-
-  //   },
-
-  // },
   {
-    path: '/three',
-    name: 'Three',
-    component: () => import('@/views/Three.vue'),
+    path: '/blog',
+    name: 'blog',
     meta: {
-
+      extraLink: "https://blog.intheway.cloud",
     },
-
-  },
-  {
-    path: '/3d-scroll',
-    name: '3d-scroll',
-    component: () => import('@/views/3d-scroll/3d-scroll.vue'),
-    meta: {
-
-    },
-
-  },
-  {
-    path: '/3d-text',
-    name: '3d-text',
-    component: () => import('@/views/3d-text.vue'),
-    meta: {
-
-    },
-
-  },
-  {
-    path: '/physics',
-    name: 'physics',
-    component: () => import('@/views/physics.vue'),
-    meta: {
-
-    },
-
-  },
-  {
-    path: '/shader',
-    name: 'shader',
-    meta: {
-
-    },
-    children: [
-      {
-        path: 'basic',
-        name: 'basic',
-        component: () => import('@/views/shader/basic.vue'),
-        meta: {
-
-        },
-
-      },
-      {
-        path: 'create-pattern',
-        name: 'create-pattern',
-        component: () => import('@/views/shader/create-pattern.vue'),
-        meta: {
-
-        },
-
-      },
-      {
-        path: 'kongming-lantern',
-        name: 'kongming-lantern',
-        component: () => import('@/views/shader/kongming-lantern.vue'),
-        meta: {
-
-        },
-
-      },
-    ]
-
-  },
-  {
-    path: '/earth-moon-rotation',
-    name: 'earth-moon-rotation',
-    component: () => import('@/views/earth-moon-rotation.vue'),
-    meta: {
-
-    },
-
-  },
-  {
-    path: '/smart-city',
-    name: 'smart-city',
-    component: () => import('@/views/smart-city/smart-city.vue'),
-    meta: {
-
-    },
-
-  },
-  // 3d地球 飞线
-  {
-    path: '/3d-earth',
-    name: '3d-earth',
-    component: () => import('@/views/3d-earth/3d-earth.vue'),
-    meta: {
-
-    },
-
-  },
-    // 智慧园区
-    {
-      path: '/smart-park',
-      name: 'smart-park',
-      component: () => import('@/views/smart-park/smart-park.vue'),
-      meta: {
-  
-      },
-  
-    },
-  {
-    path: '/note',
-    name: 'note',
-    component: () => import('@/views/note/note.vue'),
-    meta: {
-
-    },
-    children: [
-      {
-        path: '/note-list',
-        name: 'note-list',
-        component: () => import('@/views/note/note-list.vue'),
-        meta: {
-
-        },
-
-      },
-      {
-        path: '/note-edit',
-        name: 'note-edit',
-        component: () => import('@/views/note/note-edit.vue'),
-        meta: {
-
-        },
-
-      },
-    ]
-
   },
 
 
@@ -228,7 +88,7 @@ const WHITE_NAME_LIST: string[] = [];
 
 
 
-const routes = [RootRoute, ...MainRoutes,threejsRoute]
+const routes: Array<AppRouteRecordRaw >= [RootRoute, ...MainRoutes,threejsRoute]
 
 // export const router = createRouter({
 //   history: createWebHistory(process.env.BASE_URL),
@@ -242,7 +102,7 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_PUBLIC_PATH),
   // 应该添加到路由的初始路由列表。
   // routes: basicRoutes as unknown as RouteRecordRaw[],
-  routes,
+  routes :routes as unknown as RouteRecordRaw[],
   // 是否应该禁止尾部斜杠。默认为假
   strict: true,
   scrollBehavior: () => ({ left: 0, top: 0 })
@@ -257,6 +117,26 @@ export function resetRouter() {
     }
   });
 }
+
+/**
+ * 公共路由守卫
+ */
+router.beforeEach((to, from, next) => {
+  NProgress.start(); // start progress bar
+  const title = to.meta && (to.meta.title as string);
+  document.title = title?config.title + title:config.title;
+  // 外链 直接打开外链会被浏览器拦截  需点击事件触发
+  // if(to.meta.extraLink){
+  //   openWindow(to.meta.extraLink as string);
+  // }else {
+  //   next();
+  // }
+  next();
+  // return true
+});
+router.afterEach(() => {
+  NProgress.done(); // finish progress bar
+});
 
 // config router
 // 配置路由器

@@ -1,8 +1,14 @@
 <template>
-  <div class="view" ref="viewRef"></div>
+  <div class="img-to-particles">
+    <div class="control" ref="controlEle">
+    </div>
+    <div class="view" ref="viewRef"></div>
+  </div>
 </template>
 <script lang="ts" setup>
 import gsap from "gsap";
+// 导入dat.gui
+import * as dat from "dat.gui";
 import * as THREE from "three";
 import { useEventListener } from "@/hooks/useEventListener";
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';// 轨迹球控制器
@@ -11,6 +17,20 @@ import vertexShader from "../shader/vertex.glsl?raw"
 // 片元着色器
 import fragmentShader from "../shader/fragment.glsl?raw"
 import { rgb255To1 } from "@/utils/colorConvert";
+
+/**
+ * props
+ * controls 是否显示gui控件
+ */
+const props = withDefaults(defineProps<{ img: string,zRange:number,showControls:boolean }>(),{
+ img:'',
+ zRange: 150,
+ showControls:false
+})
+const { showControls } = toRefs(props)
+const imgUrl = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/tree_star.jpg'
+const zRange = ref(150);
+console.log(imgUrl,zRange);
 
 // const gui = new dat.GUI();
 // 1、创建场景
@@ -33,11 +53,8 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 let controls:TrackballControls; 
 
 const viewRef = ref<HTMLCanvasElement>()
+const controlEle = ref<HTMLCanvasElement>();
 
-
-const props = withDefaults(defineProps<{ img: string }>(),{
- img:''
-})
 
 
 
@@ -71,7 +88,7 @@ function createPixelData() {
     tick();
   };
 
-  image.src = props.img;
+  image.src = imgUrl;
 }
 function createPaticles() {
   const geometry = new THREE.BufferGeometry();
@@ -79,8 +96,6 @@ function createPaticles() {
   let cIdx = 0;
   let weights = [0.2126, 0.7152, 0.0722];
   let x = imageWidth * -0.5, y = imageHeight * 0.5;
-  let zRange = 100;
-  let vertices: any = [];
   const positions = []
   // const positions = new Float32Array(imageWidth * imageHeight * 3);// 粒子position集合 count * itemSize
 
@@ -108,20 +123,13 @@ function createPaticles() {
       let weight = r * weights[0] + g * weights[1] + b * weights[2];
 
 
-      let z = (zRange * -0.5) + (zRange * weight);
-      // console.log(x, y, z);
-      vertices.push(x, y, z)
-      cIdx += 4;// rgba
-      // positions.push(x,y,0)
+      let z = (zRange.value * -0.5) + (zRange.value * weight);
       var vertex = new THREE.Vector3();
       vertex.x = x;
       vertex.y = y;
-      vertex.z = (zRange * -0.5) + (zRange * weight);
+      vertex.z = z;
       positions.push(x, y, z)
-      // let idx = j + imageWidth * i;
-      // positions[idx]= x;
-      // positions[idx+1]= y;
-      // positions[idx+2]= 0;
+      cIdx += 4;// rgba
       x++;
     }
     x = imageWidth * -0.5;
@@ -184,6 +192,17 @@ const createScene = () => {
   renderer.setClearColor(0x000000, 1);
   viewRef?.value?.appendChild(renderer.domElement)
 }
+const createGui  = () =>{
+  const gui = new dat.GUI({ name: '控制器' });
+  gui.add(zRange,'value').min(0).max(500).step(10).name('z轴扩散范围')
+  // gui.add(controls,'rotateSpeed').min(1).max(10).step(1).name('controls旋转速度')
+  // gui.add(controls,'zoomSpeed').min(1).max(10).step(0.1).name('controls缩放速度')
+  // gui.add(controls,'panSpeed').min(0).max(5).step(0.1).name('controls平移速度')
+  // gui.add(controls,'noZoom').name('controls禁止缩放')
+  // gui.add(controls,'noPan').name('controls禁止平移')
+  // gui.add(controls,'staticMoving').name('controls禁止移动')
+  controlEle.value?.appendChild(gui.domElement)
+}
 
 var animationTime = 0;
 var animationDelta = 0.03;
@@ -191,6 +210,10 @@ onMounted(() => {
   createScene()
   createControls()
   createPixelData()
+  if(showControls.value){
+    createGui()
+
+  }
 
   // 监听画面变化，更新渲染画面
   useEventListener("resize", () => {
@@ -233,8 +256,20 @@ const render = () => {
 
 </script>
 <style lang="scss" scoped>
-.view {
-  width: 100vw;
-  height: 100vh;
+.img-to-particles {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
 }
+.control {
+  position: absolute;
+  right: 20px;
+  top: 0;
+}
+.view {
+  width: 100%;
+  height: 100%;
+}
+
 </style>

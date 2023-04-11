@@ -25,7 +25,7 @@
 
 @media screen and (max-width:378px) {
   :root {
-    font-size: calc(100vw / 3.75);
+    /* font-size: calc(100vw / 3.75); */
 
   }
 
@@ -34,9 +34,11 @@
 @media screen and (min-width:377px) and (max-width:1920px) {
   :root {
     /* 在1920设计稿中1rem等于100px，.32rem等于32px */
-    font-size: calc(100vw / 19.2);
+    /* font-size: calc(100vw / 19.2); */
   }
 }
+
+
 
 body {
   margin: 0;
