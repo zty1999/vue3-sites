@@ -154,7 +154,9 @@ const loadCar = (type:string) =>{
 const loadCar1 = () =>{
   const gltfLoader = new GLTFLoader();
   // gltfLoader.setPath('/public/')
-  gltfLoader.load("/models/car-showroom/car/Koenigsegg-agera.glb", (gltf) => {
+  
+  // gltfLoader.load("/models/car-showroom/car/Koenigsegg-agera.glb", (gltf) => {
+  gltfLoader.load("http://rt99nlth2.hn-bkt.clouddn.com/3d/Koenigsegg-agera.glb", (gltf) => {
     console.log(gltf);
     // const children = [...gltf.scene.children]
     // console.log(children);
@@ -237,8 +239,9 @@ const loadCar1 = () =>{
 
 const loadCar2 = () =>{
   const gltfLoader = new GLTFLoader();
-  // gltfLoader.setPath('/public/')
-  gltfLoader.load("/models/car-showroom/car/Roadster.glb", (gltf) => {
+  // gltfLoader.setPath('/public/') 
+  // gltfLoader.load("/models/car-showroom/car/Roadster.glb", (gltf) => {
+  gltfLoader.load("http://rt99nlth2.hn-bkt.clouddn.com/3d/Roadster.glb", (gltf) => {
     console.log(gltf);
     // geometry.computeBoundingBox();
     gltf.scene.position.y =  1.3;
