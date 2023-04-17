@@ -35,7 +35,6 @@ export default defineConfig({
         // presets
         'vue',
         'vue-router',
-        
         // custom
         {
           // 'element-plus': [

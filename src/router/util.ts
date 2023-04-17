@@ -16,6 +16,5 @@ export function openWindow(
   noreferrer && feature.push('noreferrer=yes');
   console.log(url);
   
-  window.open(url, target);
-  // window.open(url, target, feature.join(','));
+  window.open(url, target, feature.join(','));
 }

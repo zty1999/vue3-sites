@@ -3,6 +3,7 @@
 </template>
 <script lang="ts" setup>
 import gsap from "gsap";
+import * as dat from "dat.gui";
 import * as THREE from "three";
 import * as CANNON from "cannon-es"
 import { useEventListener } from "@/hooks/useEventListener";
@@ -10,37 +11,57 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 console.log(CANNON);
 
-// const gui = new dat.GUI();
-// 1、创建场景
+
+/**
+ * Scene
+ */
 const scene = new THREE.Scene();
 
-// 2、创建相机
+/**
+ * Camera
+ */
 const camera = new THREE.PerspectiveCamera(
   45,
   window.innerWidth / window.innerHeight,
   0.1,
   300
 );
-
-
 // 设置相机位置
 camera.position.set(0, 0, 18);
+camera.lookAt(scene.position)
 scene.add(camera);
 
-// 初始化渲染器
-// 渲染器透明
-const renderer = new THREE.WebGLRenderer({ alpha: true,antialias: true });
+/**
+ * Renderer
+ */
+// alpha 渲染器透明
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
+/**
+ * Controls
+ */
+//创建轨道控制器
+const controls = new OrbitControls(camera,renderer.domElement)
+  
+
+// 画布容器
 const viewRef = ref<HTMLCanvasElement>()
 
+/**
+ * Clock
+ */
+const clock = new THREE.Clock();
 
 
+/**
+ * GUI
+ */
+ const gui = new dat.GUI({ name: '控制器' });
 
 
-
-
-
-
+/**
+ * Physic 
+ */
 // 创建物理世界
 // const world = new CANNON.World({ gravity: 9.8 });
 const world = new CANNON.World();
@@ -52,35 +73,11 @@ world.gravity.set(0, -9.8, 0);
 
 onMounted(() => {
 
-  //创建轨道控制器
-  const controls = new OrbitControls(camera, renderer.domElement);
-  // 设置控制器阻尼，让控制器更有真实效果,必须在动画循环里调用.update()。
-  controls.enableDamping = true;
-  // 添加坐标轴辅助器
-  const axesHelper = new THREE.AxesHelper(5);
-  scene.add(axesHelper)
-
-
-  renderer.setSize(viewRef.value!.offsetWidth, viewRef.value!.offsetHeight)
-  // 开启场景中的阴影贴图
-  renderer.shadowMap.enabled = true;
-  viewRef?.value?.appendChild(renderer.domElement)
-
-
-
-
-  // 设置时钟
-  // const clock = new THREE.Clock();
-  const render = () => {
-    // let time = clock.getElapsedTime();
-    // let deltaTime = clock.getDelta();
-
-    // 使用渲染器，通过相机将场景渲染进来
-    renderer.render(scene, camera);
-    //   渲染下一帧的时候就会调用render函数
-    requestAnimationFrame(render);
-  }
-  render()
+  setupRenderer()
+  setupControls()
+  createAxesHelper()
+  setUpGui()
+  tick()
 
 
 
@@ -101,9 +98,37 @@ onMounted(() => {
 
 
 
+const tick = () => {
+  let time = clock.getElapsedTime();
+  //   渲染下一帧的时候就会调用render函数
+  requestAnimationFrame(tick);
+  controls.update()
+
+  // 使用渲染器，通过相机将场景渲染进来
+  renderer.render(scene, camera);
+}
 
 
+const setupControls = () => {
 
+  // 设置控制器阻尼，让控制器更有真实效果,必须在动画循环里调用.update()。
+  controls.enableDamping = true;
+}
+const createAxesHelper = () => {
+  // 添加坐标轴辅助器
+  const axesHelper = new THREE.AxesHelper(5);
+  scene.add(axesHelper)
+}
+const setupRenderer = () => {
+  renderer.setSize(viewRef.value!.offsetWidth, viewRef.value!.offsetHeight)
+  // 开启场景中的阴影贴图
+  renderer.shadowMap.enabled = true;
+  renderer.setClearColor(0x000000, 1);
+  viewRef?.value?.appendChild(renderer.domElement)
+}
+const setUpGui = () => {
+  // gui.add(zRange,'value').min(0).max(500).step(10).name('粒子扩散范围')
+}
 
 
 

@@ -1,3 +1,3 @@
 export const config = {
-  title: "spark's 个人博客"
+  title: "spark's 个人站"
 }

@@ -5,6 +5,7 @@ import {
   RouteRecordRaw
 } from 'vue-router';
 import { threejsRoute } from "./modules/threejs"
+import { noteRoute } from "./modules/note"
 import { App } from 'vue';
 import NProgress from "@/utils/progress";
 import { config } from '@/config';
@@ -88,7 +89,7 @@ const WHITE_NAME_LIST: string[] = [];
 
 
 
-const routes: Array<AppRouteRecordRaw >= [RootRoute, ...MainRoutes,threejsRoute]
+const routes: Array<AppRouteRecordRaw >= [RootRoute, ...MainRoutes,threejsRoute,noteRoute]
 
 // export const router = createRouter({
 //   history: createWebHistory(process.env.BASE_URL),
@@ -124,7 +125,7 @@ export function resetRouter() {
 router.beforeEach((to, from, next) => {
   NProgress.start(); // start progress bar
   const title = to.meta && (to.meta.title as string);
-  document.title = title?config.title + title:config.title;
+  document.title = title?config.title+'-' + title:config.title; 
   // 外链 直接打开外链会被浏览器拦截  需点击事件触发
   // if(to.meta.extraLink){
   //   openWindow(to.meta.extraLink as string);

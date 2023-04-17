@@ -28,9 +28,10 @@ const props = withDefaults(defineProps<{ img: string,zRange:number,showControls:
  showControls:false
 })
 const { showControls } = toRefs(props)
-const imgUrl = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/tree_star.jpg'
-const zRange = ref(150);
-console.log(imgUrl,zRange);
+// const imgUrl = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/tree_star.jpg'
+const imgUrl = 'https://cdn.pixabay.com/photo/2016/03/18/15/02/ufo-1265186_960_720.jpg'
+
+const zRange = ref(500);
 
 // const gui = new dat.GUI();
 // 1、创建场景
@@ -49,7 +50,7 @@ scene.add(camera);
 // 初始化渲染器
 // 渲染器透明
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-
+renderer.setPixelRatio( window.devicePixelRatio );
 let controls:TrackballControls; 
 
 const viewRef = ref<HTMLCanvasElement>()
@@ -80,8 +81,10 @@ function createPixelData() {
     context.fillStyle = context.createPattern(image, 'no-repeat')!;
     context.fillRect(0, 0, imageWidth, imageHeight);
     //context.drawImage(image, 0, 0, imageWidth, imageHeight);
+    console.log(context.getImageData(0, 0, imageWidth, imageHeight));
 
     imageData.value = context.getImageData(0, 0, imageWidth, imageHeight).data;
+    
     console.log(imageData.value);
 
     createPaticles();
@@ -92,21 +95,13 @@ function createPixelData() {
 }
 function createPaticles() {
   const geometry = new THREE.BufferGeometry();
-
   let cIdx = 0;
   let weights = [0.2126, 0.7152, 0.0722];
   let x = imageWidth * -0.5, y = imageHeight * 0.5;
   const positions = []
   // const positions = new Float32Array(imageWidth * imageHeight * 3);// 粒子position集合 count * itemSize
-
-  let { r, g, b } = rgb255To1(129, 193, 73)
   shaderUniforms = {
-    vertexColor: {
-      type: "c",
-      value: [new THREE.Vector3(r, g, b), new THREE.Vector3(r, g, b), new THREE.Vector3(r, g, b)]
-    },
     amplitude: {
-      type: "f",
       value: 0.5
     }
   };
@@ -145,15 +140,14 @@ function createPaticles() {
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
     side: THREE.DoubleSide,
-    vertexColors: true
+    // vertexColors: true
   })
   console.log(positions.length);
-
   const bufferPositions = new Float32Array(positions)
   const bufferColors = new Float32Array(vertexColors)
   geometry.setAttribute('position', new THREE.BufferAttribute(bufferPositions, 3));
   geometry.setAttribute('vertexColor', new THREE.BufferAttribute(bufferColors, 3));
-  geometry.attributes.vertexColor.needsUpdate = true;
+  // geometry.attributes.vertexColor.needsUpdate = true;
   // geometry 设置attribute  传递属性给顶点着色器
   console.log(new THREE.BufferAttribute(bufferColors, 3));
   const points = new THREE.Points(geometry, shaderMaterial);
@@ -177,8 +171,8 @@ function createControls() {
   controls.zoomSpeed = 1.2;// 缩放速度
   controls.panSpeed = 0.8;// 平移速度
 
-  controls.noZoom = false;
-  controls.noPan = true;
+  controls.noZoom = false;// 是否禁止缩放
+  controls.noPan = true;// 是否禁止平移
   console.log(controls);
   
   controls.staticMoving = false;// 是否禁止移动，为 true 没有惯性
@@ -194,7 +188,7 @@ const createScene = () => {
 }
 const createGui  = () =>{
   const gui = new dat.GUI({ name: '控制器' });
-  gui.add(zRange,'value').min(0).max(500).step(10).name('z轴扩散范围')
+  gui.add(zRange,'value').min(0).max(500).step(10).name('粒子扩散范围')
   // gui.add(controls,'rotateSpeed').min(1).max(10).step(1).name('controls旋转速度')
   // gui.add(controls,'zoomSpeed').min(1).max(10).step(0.1).name('controls缩放速度')
   // gui.add(controls,'panSpeed').min(0).max(5).step(0.1).name('controls平移速度')

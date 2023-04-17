@@ -1,18 +1,12 @@
 <template>
   <div class="three-demos">
     <div class="demo-list animate__animated animate__fadeInUp">
-      <div class="demo-item hvr-grow" @click="showDemo('starry-sky')">
-        <p class="demo-item-title hvr-grow">{{demos['starry-sky'].title}}</p>
+      <div class="demo-item hvr-grow" @click="value.path?toPage(value.path):showDemo(key+'')" v-for="(value,key) in demos" :key="key">
+        <p class="demo-item-title hvr-grow">{{demos[key].title}}</p>
       </div>
-      <div class="demo-item hvr-grow" @click="showDemo('snow-flake')">
-        <p class="demo-item-title hvr-grow">{{demos['snow-flake'].title}}</p>
-      </div>
-      <div class="demo-item hvr-grow" @click="showDemo('spiral-galaxy')">
-        <p class="demo-item-title hvr-grow">{{demos['spiral-galaxy'].title}}</p>
-      </div>
-      <div class="demo-item hvr-grow" @click="showDemo('image-to-particles')">
-        <p class="demo-item-title hvr-grow">{{demos['image-to-particles'].title}}</p>
-      </div>
+      <!-- <div class="demo-item hvr-grow" @click="showDemo(key+'')" v-for="(value,key) in demos" :key="key">
+        <p class="demo-item-title hvr-grow">{{demos[key].title}}</p>
+      </div> -->
     </div>
   </div>
 
@@ -23,6 +17,7 @@
         <div class="overlay" v-if="currentShowDemo">
           <div class="demo-dialog modal " >
           <div class="modal-header">
+            <screenfull></screenfull>
             <div class="close-icon" @click="currentShowDemo = ''">
               <div class="close-icon-inner hvr-grow">
                 <div class="la" style="transform: rotate(-45deg);">
@@ -52,35 +47,58 @@ import StarrySky from '@/components/three-particles/starry-sky.vue';
 import SnowFlake from '@/components/three-particles/snow-flake.vue';
 import SpiralGalaxy from '@/components/three-particles/spiral-galaxy.vue';
 import ImgToParticles from '@/views/threejs/image-to-particles/components/img-to-particles.vue';
+import CarShowRoom from '@/views/threejs/car-showroom/components/three-car-showroom.vue';
 import { Ref } from 'vue';
+import { openWindow } from '@/router/util';
 
 
-let demos: { [index: string]: {title:string,component:any} } = {
+let demos: { [index: string]: {title:string,component?:any,path?:string} } = {
   'starry-sky': {
     title:'星空',
-    component: StarrySky
+    component: StarrySky,
+    path: '/three/starry-sky'
+
   },
   'snow-flake': {
     title:'雪花',
-    component: SnowFlake
+    component: SnowFlake,
+    path: '/three/snow-flake'
+
   },
   'spiral-galaxy': {
     title:'臂旋星系',
-    component: SpiralGalaxy
+    component: SpiralGalaxy,
+    path: '/three/spiral-galaxy'
+
   },
   'image-to-particles': {
     title:'图片粒子化',
-    component: ImgToParticles
+    component: ImgToParticles,
+    path: '/three/image-to-particles'
+
+  },
+  'car-showroom': {
+    title:'3d汽车展示',
+    component: CarShowRoom,
+    path: '/three/car-showroom'
   },
 }
 let router = useRouter()
 let currentShowDemo: Ref<string> = ref('')
 let demoTitle: Ref<string> = ref('')
-
 const showDemo = (key: string) => {
   console.log('show demo' + key, router);
   currentShowDemo.value = key
   demoTitle.value = demos[key].title
+}
+const toPage = (path: string) => {
+  console.log(path);
+  let routeUrl = router.resolve({
+          path: path,
+          // query: {}
+     });
+  console.log(routeUrl);
+  openWindow(routeUrl.href);
 }
 </script>
 <style lang="scss" scoped>
@@ -97,14 +115,14 @@ const showDemo = (key: string) => {
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  gap: 20px;
+  /* justify-content: center; */
   padding: 110px 60px;
 
   .demo-item {
     position: relative;
     width: 200px;
     height: 200px;
-    margin: 0 10px;
     background-color: rgba(60, 60, 60, .8);
     border-radius: 10px;
     cursor: pointer;
